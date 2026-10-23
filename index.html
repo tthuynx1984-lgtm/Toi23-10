@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>M8 Mobile</title><meta name="application-name" content="M8 Mobile"><meta name="apple-mobile-web-app-title" content="M8 Mobile"><link rel="manifest" href="manifest.webmanifest?v=2"><meta name="theme-color" content="#161615"><link rel="icon" href="icon-192.png?v=2"><link rel="apple-touch-icon" href="icon-180.png?v=2"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#f4f4f2;--fg:#1c1c1a;--bar:#fff;--bd:#d6d6d0;--ac:#0b6bcb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--fg:#eeeeea;--bar:#232321;--bd:#3a3a36;--ac:#5aa9ff}}
+:root[data-theme="dark"]{--bg:#161615;--fg:#eeeeea;--bar:#232321;--bd:#3a3a36;--ac:#5aa9ff}
+html,body{height:100%;margin:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--fg);font:14px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+.bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:6px 8px;background:var(--bar);border-bottom:1px solid var(--bd)}
+button,.btn,select,input[type=search]{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;min-height:34px;box-sizing:border-box}
+.btn.p{background:var(--ac);border-color:var(--ac);color:#fff;cursor:pointer}
+input[type=search]{flex:1;min-width:110px}
+#w{position:relative;flex:1;min-height:0;background:#000}
+canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+#hint{z-index:1;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#aaa;padding:20px;pointer-events:none;line-height:1.5}
+#st{padding:4px 8px;font-size:12px;background:var(--bar);border-top:1px solid var(--bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#lv,#cl,#ll{position:absolute;right:6px;top:6px;max-height:70%;width:220px;overflow:auto;background:var(--bar);border:1px solid var(--bd);border-radius:10px;padding:8px;display:none}
+#lv label{display:flex;gap:6px;align-items:center;padding:3px 0}#lv i{width:12px;height:12px;border:1px solid #888;display:inline-block}
+#pp{position:absolute;left:6px;right:6px;bottom:6px;background:var(--bar);border:1px solid var(--bd);border-radius:10px;padding:8px;display:none;gap:6px;flex-wrap:wrap;align-items:center}
+#pp a,#pp button{text-decoration:none;color:#fff;background:var(--ac);border-color:var(--ac)}#pp button{background:var(--bg);color:var(--fg);border-color:var(--bd)}
+#pp span{flex:1 1 100%;font-size:12px}.on{outline:2px solid var(--ac)}#cm{width:64px}
+#cl{width:min(340px,92%);font-size:12px;z-index:2}#cl input{width:100%}#cl button{margin:4px 4px 0 0}#cl p{margin:4px 0}
+#gmap{position:absolute;inset:0;display:none;pointer-events:none;z-index:0}canvas{z-index:1}#pp,#lv,#cl,#ll{z-index:2}#ll{width:min(340px,92%);font-size:13px}#ll .lr{display:flex;gap:4px;align-items:center;margin:4px 0}#ll .lr span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#gps.on{outline:2px solid var(--ac)}
+#brand{display:flex;align-items:center;gap:6px;margin-right:2px;white-space:nowrap}#brand img{width:30px;height:30px;border-radius:7px;display:block}#brand b{font-size:15px;letter-spacing:.2px}
+#fw{position:absolute;left:6px;right:6px;top:6px;z-index:4;display:none;background:#5a3d00;color:#fff;border:1px solid #e6a100;border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.45}#fw button{margin-top:4px;padding:3px 10px;min-height:28px}
+#gi{position:absolute;left:6px;top:40px;max-width:min(400px,calc(100% - 12px));z-index:3;display:none;background:var(--bar);border:1px solid var(--bd);border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.5}#gi.w{border-color:#e6a100}#gb{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}#gb button{padding:3px 8px;min-height:30px}#gb button.on,#rbb button.on{outline:2px solid var(--ac)}
+#dg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9;padding:12px}#dg>div{background:var(--bar);border:1px solid var(--bd);border-radius:12px;padding:12px;width:min(580px,100%);max-height:92vh;overflow:auto;font-size:13px}#dgt{white-space:pre-wrap;word-break:break-word;font:12.5px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:8px 0;max-height:60vh;overflow:auto}#dg button{margin:3px 3px 0 0}
+#rb{position:absolute;left:6px;right:6px;bottom:6px;z-index:3;display:none;background:var(--bar);border:1px solid var(--bd);border-radius:10px;padding:7px 9px}#rt{font-size:13px;line-height:1.4;margin-bottom:5px}#rt b{font-size:15px}#rt .w{color:#e6a100}#rbb,#sbb{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}#rbb button,#sbb button{flex:0 0 auto;white-space:nowrap;padding:5px 9px}#rbb button:disabled{opacity:.4}#sbb{flex:1 1 100%;min-width:0}
+#sb{position:absolute;left:6px;right:6px;bottom:6px;z-index:3;display:none;gap:6px;flex-wrap:wrap;align-items:center;background:var(--bar);border:1px solid var(--bd);border-radius:10px;padding:6px}#sb button{padding:5px 9px}#sb button:disabled{opacity:.4}#sc{flex:1 1 100%;font-size:12px}
+#ed{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9;padding:16px}#ed>div{background:var(--bar);border:1px solid var(--bd);border-radius:12px;padding:14px;width:min(420px,100%);font-size:14px}#ed input{width:100%;box-sizing:border-box;margin:6px 0 10px;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px}#edm{color:#d33;min-height:1.2em;margin:0 0 6px}
+#lcb{position:absolute;left:6px;top:6px;z-index:2;background:rgba(0,0,0,.7);color:#fff;border-radius:14px;padding:5px 11px;font-size:12px;display:none}#lc{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9;padding:16px}#lc>div{background:var(--bar);border:1px solid var(--bd);border-radius:12px;padding:14px;width:min(420px,100%);font-size:14px}#lc textarea{width:100%;height:84px;box-sizing:border-box;margin:8px 0;font:12px monospace;color:var(--fg);background:var(--bg);border:1px solid var(--bd);border-radius:8px}#lc p{margin:4px 0}#lcm{color:#d33;min-height:1.2em}
+#adv{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 8px}#adv>*{flex:0 0 auto;white-space:nowrap}#adv button{min-height:30px;padding:3px 9px;font-size:13px}#adv label{display:flex;align-items:center;gap:4px;font-size:13px}#adv select{min-height:30px;padding:2px 6px;font-size:13px}
+/* Đo: menu dọc bên phải, kết quả ở góc dưới trái */
+#rb{position:absolute;inset:0;background:none;border:0;padding:0;pointer-events:none}#rb>*{pointer-events:auto}#rt{position:absolute;left:6px;bottom:6px;right:112px;margin:0;background:var(--bar);border:1px solid var(--bd);border-radius:10px;padding:7px 9px}#rbb{position:absolute;right:6px;top:6px;max-height:calc(100% - 12px);width:100px;flex-direction:column;flex-wrap:nowrap;overflow-x:hidden;overflow-y:auto;gap:5px;padding:5px;background:var(--bar);border:1px solid var(--bd);border-radius:10px;box-sizing:border-box;align-content:flex-start}#rbb button{flex:0 0 auto;white-space:normal;width:100%;padding:6px 4px;font-size:13px;line-height:1.2}
+</style></head><body>
+<div class="bar"><span id="brand"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUEBAQEAwUEBAQGBQUGCA0ICAcHCBALDAkNExAUExIQEhIUFx0ZFBYcFhISGiMaHB4fISEhFBkkJyQgJh0gISD/2wBDAQUGBggHCA8ICA8gFRIVICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICD/wAARCADAAMADASIAAhEBAxEB/8QAHQAAAQUBAQEBAAAAAAAAAAAABwIDBAUGCAEACf/EAEkQAAEDAwIDBQUDCAgEBgMAAAECAwQABREGIQcSMRNBUWFxFCKBkbEyodEIFSNCUmKCwRYkM3KSssLhQ1OEoiU1RWNz8JTS8f/EABoBAAIDAQEAAAAAAAAAAAAAAAIDAAEEBQb/xAAmEQACAgICAwACAwADAAAAAAAAAQIRAyESMQQiQRNRMmFxgZGh/9oADAMBAAIRAxEAPwAKuypEyW/LmPKekvuKdccWcqWonJJPiTTrIJByMVC9DUtpRCR6V6yNHAkS0gJThJzSxnPQYplG6AQrFPb4zirAHkKHKd6WkjPvGmEjbOcY7s0v9Xm6VKsqySlQIJByKdbWnBGd6hoVtuSN/Gn88iinlBOBg+NV2WSQtIHvHA8a+5jnCBkUwFE7KTjFPIOVe572NzvUIPJCsFS048MU8j3kAkhKB+srYUwlxI3IK1eGTy/70suKVjnVzYGwPQUVpA7HVtt84CHtwOqk4B/Cm+zLaiFJOVfL4UguZG2x8aUFrACQvmSeqT0qrJQhbZTlXLnNIU5gjJGfADenCCSQkn+6pX0NR1ELyFABQ28xULEKcVk7BQNMpI7RKVD4U6sYxsKaKQd9s1SLY7JWp55slRUpI5UjuArzs8Dp/vSmmlITzqzzdN/CnAOfbbI7s0bbfQCpEdKCt3l6inUx1PPJisKbStWd17DOKmpY7COHFDC1jbf76iFouLwgAmiS4lcuRFEV1TqmeQFSSUrxSvbpNqkR3bY+piTGWHEPNnCkrByCD5VPf5YcYp3DisbA71SFQ6E+ooXFfrsKMnJ2UyRtvTyCU7d3hTCSk708Ps0oeSWnUj3RnbuqUhJ/sxuTvUFltbziGmULdcWcJQhJUVHwAG5q1att3R/6TOP/AErn4UXJfQHF/BITy5Odu+neZrs/e7xsKWbdeFbJtE/19lc/CvUWe8jraLgf+lc//Wr5x+MDg32RgObY7+dLT7nTupJSptam3EqQtJwpKhgg+BFOjY48apBDqfe3Kjnrj8adJPLy9B4CvE4CaW024+6GmWluuHohtJUo48hvUZEejcDevRg7d9Sk2u5k4Frmn0jL/Cli0XbP/lM7/wDFc/ChtFtMhpPMcDanNkjzPfXsiNLiKT7VEfj832e2aUjPpkDNRzuc+FGnYL0O523PMaTsBgjI8e8V9kqT0r1IBO9QrsUmMHBkkkDwFOpt6ltqWhj3E7c2QMnwyep8qtYMVtLSHpHQgcrY6q9T3CpboQ+kZCAB7oSnYAeQq9C22+jOhhRKm1JOe8EVfWew9ulyW+kpYZ95asdfBI8zVzY9PqucxqOhvnUs4SrvH+1bi82RKYLNrt7YLLA99xI/tnMbn07hUU0nQucvgHpjbsiSVdmRzHASB0HhTrkVu1xy9IGFkdPCiMNMIt0Bc6c2O1I/RpI+0fOhnqF9ciUvCgEpO+R1NMi09oBO3RmZUpbzy3VZPNjA9O6oSyFArwQfCnZAwsYSNz371HVgk7Clt7NqWiuBTjGR6U6D7u9RULBV0p0q7hS2xlEy3OvIuSXWHFtOx0LeQ42opUlSQSCCOhziuztDXpzUdsZauUsN3NKN8J2fA2Kxv12yR55G3TjfT7PtFyk43w0lH+N1CfpmujLKtbHsC21qbcbCVpUk4KT12rmeSuTNuHSDgm0Hvl/9n+9OKgGC4w52xcK18mCMcpIOD18R99YVnUl0beQ6Z7ywhQUUqVkHyrd3KWl2B7Qycp5UvIPjjCh9K5zjJPZrTTOQeKFoTaNaT1ISQHHyrPiFbiscnoD40cOPNmAlfnFpOQ6zkEd/Icj/ALaBrKuZAPlXc8afKCOZnjUiSo8qObPf40TuDlof/Pg1IU/Yc9nj56H/AJitvBORQvZYfnzGIEZJU/IcDbYA7ya6a0namrVFjW6GMtx0eztn9o5y4v4qGP4aDyslR4/svx42+TDK1a2FIDiHllKhkenzrMam1NbrI77BEUJU/lUpSCfdaASVHm367dPnSdQX5yxaIus1t9SfY4a1IOcYOMD7zXOlhvzl2ud0kOLK+whOKJJ71KSj/Ua5eLHyTkzdOdNJGk1WBceFc+63h1cmSoqlodWrKkLBCUgeA3IwNsGgk24FI6k586M/FRwW3hS1AR7qlojMkDxUrnP3CgzYrbOvlzi2m2MF+XIPKlOcAeKie4Abk10/ElUW30Y/IVtUS4bapMhmJHYckSHTyoabBUpZ8AB1ozaT4JzZwbk6ieFuQd/Z21Bx7+L9VP31sNEaOs+jIQRHAlXNwYkTlpHMrxSj9lHl399ai9avsukYLb11eJffBLEVrBdd88fqp/eO3hmlZfLk/XEXj8aK3MftXC3RNuShX5nTLcAxzy1l0/I+791a6PY7REQExrVFZSOgQwkD7hXPN54t6quThRbnkWqMo4CY45nMeazv8gKw677qWVqJlMi83N8Hc88hZHXwzWb8OWb9pDPzY4fxidkiFCT0ispP/wAYFRFWC0KXziC0hR70Dl+4bUFoGsJVntqO0nPBaE8x5nCfrVzo/jPDvN2RZbv2cV6QrkiyRslau5Kx+qT3Hp6Ut4MsVyiwlnxSaUkSOIunHkRXbjHjvTI7ScrQy9yrbA7+XG49PlXM96kWlxS1tR3wDj/jZH0rsebMUhZ5yUqSdwfGuZOMunY1pvMe+2xsNw7kpSXW0gcrbw3O3cFDfHiDXT8PyHX45f8ABhz+NFS5wBNIMVR9xLg9V1EKUBWxJ8iadWnmVzHIAPQDIp0MlmOZLiMJVs3n9c/gK6HYnozaftA05k4phJ93J604DscnbwzSGaDU6LZ535Lh6mRHRv4DtHD/AJBRugykpUjBzyN/yAoO6JQE2t2QTj+surP8LISPvcoiWR8yxNIOeRofer/audk3JmqOkjVfnhtB3cA+NEXTV4buWmmx2gWY6iwrfu6p+44+Fc0a4lTrDY/zkB2i3XOzabVnlJxkk4+4d5ohcC9QQ7jbo4eZMSVcyUlrmJSpbe+U53Gys/8A8pE46GR7NvxQh+28PY8paeYxwEueQGUK+grldkciS2o7oJT8tq7R1db0vaOvFvUM5RzoGf20/ig/OuKWS/LufsjCSqQ872YT4qO31zT/ABJUmL8iLdBL4YWkuTpOo3QB7OfZ4pUNu1UN1fwjJ+Bo62lTcRpvGxKQEA9Uo8fj/wDetDy1Q49qbj2RCiI1pY7WUtJwVLOCv+InCB55rPaU4ru6o1ZNtxtio6WjnmQcpQnYJBPxAHpS8jeRuQUFxVBI4vXVTHCG8dmcrfLLAx+86nP3A0GOGTDz9nvjrowt92LFR8VKUfoKInEN/wBv0Y1EB5g5LbOP7qVH8Kzumo4tdsgJSMdtcu1UPJtsEfWqjqFFvcih4sajE+4PWltQ7NieRgdMIRy/U1ruD1uiW+0P3VYSZ81OAs/8JrOyR5qwSfLFAG5XZV1u82UpR9+Q6vOenMs/yo0Wr8+2T/w32F7tCQsBKSoKQQAg7fugU1qsaiL7nYZrje7fprTFw1LcAHo8BrmQznHbunZtr+JWPhXK0LW9w1RqaQ/qNTv5zkuFbi1JICR3JAP2UpGwHTArpZrSkDWfDBdk1VMftZdm9uTyjOWwAkFKuowomhJxD4d2XRXDa8SbVdV3eWlIU26AUhhClJbIwVH9rO1Jx0nX0ZK6MZP12xGzEs6G1JScduscxX5geFUn9NLut0uJkugjfnAA/lWbtVqWQls+84rqT3VcyICWkdkkbd/ma3Qi30ZJuPRaf02ul4Sm1vvEqcUEoWr3ST4E+FXFsgOuvIU25InS2zzIahsLWQe4qWQEpFUui9JTNSa3gQYjBWllYkPKxlKEJOcn1OB8a6ERZ70sx7Wlxb/vBltGcAnoNhVSnw0yKCl0ECVJudwtdolFtS35UFl17k6dpy4Vv6ih9xZtj6eF0yRPSG1oeacZBO/MFfgVVE1fx+Y0hqR7TGn4NruUW1oRFU+88sFTqBhYHLtgHb1zQt1rxdv+vhKRJYZg2xmO2gRmCVIW8STzBR3OyqyY1JSTrRplVMrdLW1m73HkkOhiI0guyHldG0DqfMnoB3mq++zGJM5ZjthqOBytNj9VI6D18fOmGpvs1sMRlZSFEF1QP2z4egqsddKj12HTeu0nqzm8fYpkqGCaXzApOc02FAjIpK1AJO/WktmkIWnSIug1yTsSlw5/vPJT9G63vDVImRLm+dwHGm/uUfwoeLUYnC6JnYv9ikfNxZ/zCiVwiYI0TIk9785eD4hKEj6k1zZdM0og8U5TbbCErA5Y8Z5zHnygD76wPDbUUpqzMXOMoGZbHGJzaR+t2Z7NwfFJFW/GCaQxdTke5HDY/iWT9KG3Cu4KjXmOw4f0Tyls4PQhQwB/ixQJ7oY162d9akucWVptN0jr/q0yHzpPkQHE/dzCuZND2RMLUF+1rNZxDge9DQofbecSFDbyKvrRKtevrRZdKWQXllcq3srKcITzkIBCk7d+yunpU/ivIYt8Zi4pUGi+8HI8coALrmMJKh4jIOO848aCCcfX9kk+WwS60v67To9+EJGLjOc5ZCs7lwjKx6IScH95avCqnhouOdNu3lLYbcefwCB9ocyiM+eEihrxDvhfnvMtOczcZJiIOc8yycur88nIzW70e6IfCuAQOUqlFHrytpJ/z0298QaaVhdWfzraYw+0A8pXySB/Oqe+vi0w0LIwmNFkP/E5SP8ALWn0RDMzSMCQoZ7Rx1Q9Ofl/00NeKUzks12UMZTHS0P4jn/VVfaJ/YF7ZlUFSiN1Hf5VpJvFniI+z+aF6iuKWmgltpuIvsgW8YTnkAUTjbr3VTWhrntqFkhKMElR9a0A4aatksx9Qs2ecxBzlLyRyOKGOqUq6g+eBWia9U2Li/ZoK/BTUs262p3RGpFutynJBmWxx1zmU4SnDrJJJPMQApIJ3wr0roGJoi3S7VKgXGMJUaayWXkHfKVdcVyJatL6iC2nXkditKgUqWAFgg5B/RqOCPLeuo9B6j1fEt7f9MFxBCSMCdLUqKtQ8+cALPmMZ86xzTq0Ni1ewc3P8m/UNtfcOmrjFuUZasp9qX2LyB4HYpPqMelJtv5Oeq5bwN5uEC2sZ95SFl9ePJIAGfU0e3uJmiIwI/PzL6h1EdKnfvAx99ZK78c9OtPmHa4j8qRylWXv0aQPHA5lH4CmR8nyKpL/AMAlhw3bZcaY0FYdD2VdtsjK1uP4VIlvYLsgjxI6AdwGw++hvr7ibZNPqetFhmpfurgLb0pghQipIwQhQ6rI2yPs92/Qb6x4n8SdZMvQo0N20WxwlJQ2OyU4n94k5x5ZNDVUBVrYW9Ka9ueHSLHKlrV8AN/Pf50Cg27m9h2qqKLyba7HcoK7g6w2iIzjncUgAf3R3knwrIXe5IkSeyYbDaObPKBjlHd/98qrJWopV07MqVytJGGmE/YaHp40mM0okvLPMScknrWqCbYmVJFih09mE9MdKQSt1RQ2oAgZ37/KmlOYA6eVIyRvkg+IrbdIz0RUEgcqgE56HNNvOAIO/Tp50gEqUASd+lKKSvlaHVagkfE4oG9DEgiawHsehtPRBsVnmI/utIT+NF7hYwGOGVoWof2vbSD6F1Q+iKC/FN8R37FCBwGoqlkeqyPoBRt0w8i38MrRHJw4m2NJx+8tPN9V1z5fxNH0B/FyZ2sSfy/8WQhHwCfxNDuyqdgMRJTWy0qDiT55yPpWx4jL9oiqUDkLlE/5j/IVQCNyWtsAbpbT9wooRvZJS1QRdL60ttj14/Y9ULWdOvuduy6hsrUzzfpmzgblJyUEenhUPV3EK9ax1NP1jOYXEt8FPZWyEo/ZWrIQT4qHvLPmAO6omn7Q3fH7XcVpC1MxHI6ye5TZPL8eVSflUGeEyLy3awP6tbG/aH8/rPKGyT6e6PnV0uyrvQOrghUq7NQgSoMpy4c/rdVfhRpeQIHDzS7CdlSA/KUP7ywkfcmhUxbuwkvuFRcWtW6j377/AHmiZxBlotjem7ck49mtLaiPNRKj9aGMadv6HKVrR0rouOmDwtsr6h73sBe+JK1/zFc58WpajaZKUZKnpSGgkbk4I2H+GugZNybtmhrVbEnDiYMdgp9W0A/U0EY7kS565auD5SqPAdLjSVAYLpz7+/7IJx5kUuPbZG0jfcJuFkO0WqFe9UR0yblyJUzCXgtxfNQ/WX5dE+tGS7Xu02eyv3fUMxuNbWtlrd35j3JSn9YnwFZCxaiZlPR4jQGT7o32Ax1z6bmuauJfFRjWusJkUzC3Z4DpYgN4whSRsXT+8o59E4HjkJXOXsFGkvU2eqOOdynznIuiYDWn4OcCX2aVy3B48xyG/wCHJ86oIsudclmfdpy33TuqRNfKj81GhpMuce1wWnWCmRJfBLYHRIzjJrPvKuFyc7SdIWvvCT0HoOgpqVdAVe2dCNahs8ZAbTe7e84NuRMhOfrQw1Nc5MzV8R+1zXosxnJ7Vlam1o32KVDB7zuKxQgJ5dwqpMGVItkpsqJfipPvNq3KB4p8D9aLaJR0PpHibGD0W3cQlJfZdUllN5SAmQwonALxH9qjxJ94dckV0EzZINuCg66X28YwV5SoeI/EV+e1xdfuEtx2VK9nicxLaHFBK1p9PwBrrbhxqC437g9px1vmdeY7aCo5JJQ0rCCSevukD4UmQdGK4v6DtsSU5qSytpawQZbaTssE4DuP2s7K8dj40IsBAwOldYT9LXG52KciUgKQtlSCjGfdUME/DINclBw9lhR3GxNbfHkmqZnyxd2KUok9NqbWspTkHPlT0VhciNKkLkhCWeiSB71QwolIVvvWtoRaGGynYqODU22tB6/W9nrzyWx/3Cq5BOwxv51faSb7fW1rbwPdcK8eiSaTPSGpbL7icyuZrJDCPe7GIy1t4lIJ+tEF688twbtqV/ooyOXA8GmwP9FUV4t4ma0mSlDKBJ6+STj6CqG0znJ10u8zJ91hwg+a1hP0Uay1ob9KbWDRXBgDG7rjiz54CU/zNISxzRcY6DFW+pIqlwbRzH7LIV1/acUfoBXsSMFNY2NPwxsz5pUY83ldlUYguNyiJUecpYICVK/aG9XEG5WuZZpbsJ5xya4sLk9sAFqOMJUMdQT186mTbMHV5LSVeozSoVgS24lYZSD4hOKjwtuiLNGrKtiES4y2U5U4tI+Zq34osuTeKUe3NHIQzFiADuylI/nV1a7UJGpYMfGMKKz8BSLwyJPGd2ar3m2rglX8LZB/00GRcZUHjfKNmy1PqUuXqetpX6CIH1AZ2ATkJ+grO6f0pc7no2Fc7e0qWJKlFxLaSooPMrGflWfuMlwWe8SjklxlDfxWsZ/nWWf4h6msVhRYrNepUCPupxMdwo5snKckb7b/ADpD9UOSbOgNHaN1HFm3CM7FXHlT7e/FgmRzIQHlp5Qc93Xr3ZrIQPyU9euONC9N2KFGTjtpAnKdWlI6kJCNzjuyPWsLwd4h3GycUoM2/wB1luwZv9WcelPKWltRIKF+8TsFAAnwJrrJ5zUtyklt2e6lIUQeVWMYrO27sclWjirUml1aZ1vcNPOS0ThbClhEhtJSl0coVzgHuPNn4181ECUZIFdRa64FTNVtM3TT77KLww2G1NPq5EyUD7Iz+qoZIB6Y2PQGgzP4WcR7W6piXou7cw2y1HLqVeikZBrZhcX9M+TkjEllPL061HTbXZ0lqHFbLj76w2hKRuSdqJVp4M8Try8hDOkpcNo9X5+I7afXm3+QNGnRfBuDooKn3GUi6XxaCjtUDDMcEbhAO5J6FR7u4UWScIlQjJgxgTGoUJiPc7JEeXHSGmX1Q0LUhoABKQSCQNs+pNaO/cU2uGmkrE5Dt0ObcLsHZSWJBLaW2eYJCsJHUlOB0HWtZfbFbIcZ2VcF9lGTuvl+2r91I71HoPn0Fc764tr2r9RP3qUoMuKSlphgHLcdlAwhtPkB1PeST31ke+hyVdhX0h+UfM1DJu0S72e3W6PHtUh9K2HlqU65gJQgBW25V91c9sgqCkE9Duah26CmA+/NzltkFCDn7aumfQfzqSyrlax3nc1pwKmLybRIdIc5UIGG09POkqVyjApBXnp3Ug8xGcnetrdvZnSE5zgGtbw4jpka/i7EpaQpROOnQfzrJoI5NvpV5pvUB0o/NuzcYSZhaDUZheQlSid1K7+UAfHak5HcWOj2FLUd3tGnbMl+5yeSdcm1KYZQnmWefP6QjuSM9e/uzWatduXb7RLVgEyVNJSU7hSd1ZB7wcCh9IvUi6XVy5TbFHkynMcy3JDx2GwA9/YAbADoKIOg7pJvmobTp64W2Lb4C3khLqHF4Sc9FFajgdfDBNJS0XLWy117BRAjw8oJDYYawdskIBP35qDbVqltJUEAJSOUBIAHwrWcbYaYdwgQULB7WW4o47glOP51TaQt6plyixEI9xSgnAFafFT42Y/KaJrNqU5uUZFS125DLeSMVp5oh25bjIdbWUHlynocVjr3fWkNLShQrYmls5tyl0O6TaQ7rYHqGms+mXED8apH1Rmryt2QomTKUtYCeqAvPvny36d9Vdm1aq0NXifFYEu5LS0zFYJwCcqKlK/dAA8ySBVfAud+VLL/APRxlb6jlSy46on5qrmZZXNs7WGLjjSLPUEByLZHWFowXpDaceSUqP8AMUH5ji29SzVsnPs72E5AOce6Rvt3fMV0Hb4t/wBX3O2wbjaER0ocPKpCVYXtjCiT5DHy8KA8uA4xebih0YWp5SsY6e8azyXI0xdJlvbdKIngXK5S3ZAXuEKSUHHgc/QUeNB8WP6OIZtN/wC1lwG0hDUk5W40kbBK+9YHcr7QGx5q56h36fbWRHdzJiDZKCffbH7p8PKp6bnHn7x5CST+oo8qvkaFr4yWfoPpfWmkL7HQ5a7zGfJxslYOP5j4gVu2XWi3zIdBHiFV+d2koTiZIkllRV+0BuPjRZh3i5tMBlEuYlOMcocXj60H4E/pPytfDqW73K2RGVLmzmmk+K1UCtecY9P6dju/m6LJu8jB5UR04Rn95Z2A9OY+VYeUuRJVl4LXv1cJP1rJ6hk2ZqKtmdOYBIxyJUFK/wBvlVrFGP8AZPyNmOn8UdT6hv5lTmUFtRKWorYJCAe4d+fE9T91P6gnk29pCyI7r32kJ3UB4ev0rOSLzCtqli2RUoK8jtnBlR/mfuHlWaelyZbylrcUeb7SlHc/gPKjS2U3fRKkSQ8pLDQwyjuHQmnUjCd+lRmGwMVIyMYUd61wjWxUme+lJKlAV4SendTZ6k99NBJ7K22lYbBU5+0roPQVAubQlpId98nvPX1p1KlJQcnJPWvknmBCt8VU/ZUSOnZRJtqEEfa+JFSmW3G1jsyQc7EVaBtJ9BUyLGQTzEb+FJhja6DlkvsuY12vF0hW6Dc5i5TcBKkMKc3UlKsHlKupAxtnp0rexLorT9vV2S+WY+3jIO7SD9Cfp61YaC4P6j1Pp9GoLU5b1tb4adfKVggkAqHKdjjI8aHdzkSGZ8hiXlMhtxTbgPUKCiCPmK14ZxVpPZiywlN21otHL9IUlaVOqwTkVnp9xcdKgVmo6nyTua2mkOEurdeWaVebQmFHgxyQXpr/AGKVY+0RscgdCfGpkyJK2FjxbpIFNwZRJSQ4ObwPePSoLMf2dYUhOSOmRmtVfLO7ZL9Ms8l5h+REX2bi2FFSCcA7EgE9R3VWhtOOhrI4qW0a1KlTHYeortDI9n7JJHfy70qXOk3aaqdNKVSFpAWtIxzY7z4nxPfTXZDuFLSORBV1wKuMK2wJS/REfj8wJxVc7EGclO/jXQly4MWa3aRF2kayc9t9kXJVCEH7BQjmUCvnxy5wAepz060EVNhSQfEVXrPaLtx7IMW4T4RAYfcRjpyuKT9Kt29Y3xCeX2yX8JCqglhJ7qL3C3h9oG82OTeta3GQUczjbUWI8ULRyAe+oBJJBz6Clyi47DTTBS/qa5SM9oXHc/8ANeUqoLkyc+PtpbB7kJxW+VoO2zOLjej7PdFOwH3BySgA6ptBRznIGAogbd2at+JnC+18PIsVUXVCry8+92SkiJ2KUe5zHfmOSNsjHf1qqTdML5aBKiOScrJUo95OakIaCTTwSMedKIwBjup8caQvlYkEDYGknOM18SD615t0pqAPuvfmvPLGa+2HSvCSO/aoWeE4O48+lOApKcjGcU2FFJwFfaGD6V8lWDy42qWSh9n3lb93dVmycAqUcADJPhVYk9Akb1ZRGlTLjCtjQyuS8hs+eSP5VberBatnTugdZWrQlhtrN2kKYTJZabJwSEpGOZSsdAFODfuoa8etN/0e4nOXBgD2K9NiW2pP2efovH/ar+KmOJl0/M9oWGmwpUd1lvOM7KPMU/4RWguil8ROB0GDDzMvWnnEpbJ3UWcDGfLs1df/AG6wRfGfL/se1caB5oHRkrXGp029DhjwI47adKOwZaHXf9o7gfE91dMru1guOkHdK6ZQqNGiSmozgLamwGmySQAQMjKevec5oD37UsXQeiE6bsK/04KXLi8n7Up/qlr0GAVeAAHjWrsdwl2/RMxUx4ruK8IccV1Usp5nVE+qjV5G5sqK4gXES7aw4gXFq3RVyZ1xnPOIbG2xUcEk7ABONzRjt3AnS9uQ21rriMzb7g4M+xW+OXlI/vKIP0FNcIbbcZdh1FddNwS7qK4l/wBicwkJQlB5RgqITsTzYyM4FDjUOupjcL80NSJKrnEfWzJf5igrUnZRJG+6s/LJouTfqnRK+0FC+fk6Ifs8m6cO9XsalMVPM7BdbDT49MHr4AgZ8aClltzlx1VbLOW1JcfmNsKQoYIPOAQR3Y3ojcF9QakGq06lXcAy1bkrYnyn14QuMpsn3z38pGc9cY8Kl2dFtu/5UL1ytz7EiEypVy7WPu24eyB5k57ipWatTkk1J2U4q00FzVOkJ+oLTcmDcI1nt0lgRRcpKv0bSQ4FODHVSiBgDvrE27gHw9vKPYLRxSkKufRPb2/kaWruA5sE59c1Q6v1w7oziH7ZNRHvTa3u3ZiodS40hoZHJ3gLJHvZG2/iKwKdc6o1dqaTAjc8UXYqCGGVFQYUMqSpPQjGN/L4UuKklphN32iFrbRd20Hql+wXoNqeQAtt9rJbfQei05+8HcGjRwt4UOSdBRtUnW0q1+2oUtcFqOFJWjJCdyrfYZzgYrMcabvDvGntN890RN1FFCY89nkIWw4ppJIUehJVvsTRQv10XoXgumMyvDsezllPktSQgfeo0yU24r9gcdgx/JxtaLtxruFzdWqQxCiyHy44clRUrlST5kZpH5Q7wGr7NaWlcykx1zHEp3wt5zCR68qB86tvydl/mbT2pb3j3n+SI2T4JSSfvIr7SradY/lH3nUsyN7XFsQQG28ZBWnCGz6A8yvUCgupuX6D+UU9o4GLi6fj6i4i6qiaOhSR+gjOILst3+AdD5bnxAq6Z4A6a1I0W9F8Q+3nlJLbFzhlkO47gcAj5H0qbrONN1lfH75A4lWmCpxwoUiSXOdlpOyWE8n2Eg5KuhUTvWettmVaVOx5nF+ycpKXUBDj3Ow6lQUlxBUk46EEDrnyqc5P6RqukB+92W46dvsyy3iMqLOhuFt1snOD4gjYgjcEdQarSeXc0ROL9/hak1hEu8T3u2jFtTuMB7kWQFjyOTihspR6GtUZWrYtrYouHcAUgrPN514TjGKQVAbgg57s1CxSSSrHfTwOB51FCkh5Jz3U6FeG4q0RqyShZR73eela7hxGZk6+jSJTqG48Fp2U44s4SgJTgEk9ACaxIXtk9a+M+dES6IT/AGXagJWCkKCgDkAgg99BPotLYW+Iam3tMSpqylYnSFPskHIKMBKCPgqqfh3qK7WqNNj2afHYmToirY4l5YBIKgW1pz3jdOaxLuprxcbC1Zrk6h5phznZWlAQUJOSU4AAIJwfnUILfYc7WM8tpeMcyDg0lRtBPTo3V3tTTuuLHppDpkyXZLYfP7OVAqJ8zgn0Aom6xUzH0vdrtGdQtlJUyhSFZHaFRKvjtQBjXS4w7wm8tyVrnBZWXl+8pRIIJOfEE1opev5ty0vK0/JigMuqStBSEICFg4JwlIzlOR8qri72T/C04WaidsOsIMuQ8t62tIcZmQ+0PvNrwedCc45gceuMZ3otXrgVpzV96kam0fxGsbMCer2h9iWSlbCz9rAyD13woAjxrmdZdbcS8w4ptxG6VJOCKu7Xrm82wFKg27n9fsk8x+OKjTTtOidnQN7tVj0lohOi9KIVdI7pLt3vLg5Gl/ujvVnAASO4Y3ySMDw0dbbd1ZqV1xLIQExGTnG+5CU+J2SABWYuHFfUlw0c/pVpppiHIdDzrqhzOkjuSdgn13PpVBadUTbLbTb22kush4vJBbbVhRAGfeSd9hVVogd7xpnSvFiFb1sXeHpHVMBHYPxp6AhmXnB5wsYBJO/jvgg9a9tOk9L8HnHbvc7/AA9R6icQWY0S3jtEo5upyM4z3k742A3oAtarvEW+yrm0+4puW8X3GXAlaSonJOCMA+mK10nisp7Tb1si6djomvbe3KCUqQO8AJGT8xUp9WWeIeZ1RxVtsBhK1h+4e1SVqVzFxzPMs+QATjA2Ga3HGC/GTpt1pt9LjLrzUVJSrIPKVLX8iMUE7NdX7Jdk3RAUt4JWNgnfmGD1BFWF/wBWTNRw4kN5oNR4y1uBCUITlSgBn3QO4UVbBDPo4qtPDWzQ23Epelc011Gfe5CeYqx4YCRnzoOWzUUtMmYxGkiLIucoSEPKJACwrmQDgjrkj5U6rXl19nXHYHZK7AxkOdm3zJRy8mM8ufs7dayjjXuIwAeXoDvUSL/06RvGmk6tgwrhpK+N2S6BkCbCnSVpS451KgonJyc775GM4xVRG0UbdGnJ1TxPiwruphXsMaM+44lTvUc5GSE9R0HWhrauIL8GKmJNiuyGkDASSlYHpzbj51DvutJF4Y9lgW9u2sKGHFNgBxweBI6DyzS6fVl0VM2dOnz1v3CSqQ8n9GFFfOAAegPeM5+dezYcmC6GZbRbWpCVgHwIzTcCa5bpLchlLanGzkBaAoff9atdSajN3U000yhDCUhRKkAr5iNxnuAO23WtMU1QOihUrGAOnfSeVJ3IPwpPOSOlI3KzmjooWBk5wK9JOAAdq8JxgCvqhBQVy9d6+KuY7/PNIxvk9K8HNggneqIOgoHTBNeh3O3Lj400Bnc16dhk1NIg92g6bY9aUOXO3Wo/KSMCnBlKcVCDxUO8ikAIUM4FN5UUjpk18FKznNRooe2T0Ga9JB3xmmUqJJya+yvPiKmix48mAKSMDoKbGcFSule846b4qUQcJBG/SvQANqa5k0kqJOc9KlEHsJBz1pClK6AZFIKlAHekpWrGCamiCsAjJGa8JA2FeZOCK83NSiH2cd2a8zk7dK+ArzcelSyH2eoxX3djFfYPf8K+OwqWQ//Z" alt="" width="30" height="30"><b>M8 Mobile</b></span><label class="btn p">Mở<input id="f" type="file" hidden></label><button id="lib">Thư viện</button><input id="q" type="search" placeholder="Tìm số thửa / chữ"><button id="fit" title="Vừa khung">⤢</button><button id="gps" title="Vị trí hiện tại của tôi">◎ Vị trí</button><button id="sn" title="Bắt điểm: chạm là ghim đúng đầu đoạn thẳng gần nhất">🧲 Bắt điểm</button><button id="sl" title="Chọn đối tượng để xóa, di chuyển, sửa chữ">☑ Chọn</button><button id="rl" title="Đo khoảng cách và diện tích">📏 Đo</button></div>
+<div id="adv" class="bar"><select id="md" hidden></select><button id="sat" class="on">Vệ tinh Esri</button><button id="rf" title="Tải lại ảnh vệ tinh (thử lại máy chủ chính)">↻ Tải lại ảnh</button><button id="dgb" title="Kiểm tra ảnh vệ tinh, vị trí, tọa độ bản đồ">🩺 Chẩn đoán</button><button id="cu" title="Dùng nguồn ảnh vệ tinh khác (địa chỉ có {z} {x} {y})">Nguồn ảnh khác</button><button id="gg" title="Nền ảnh vệ tinh Google Maps (cần khóa API)">Nền Google</button><button id="pn" class="on">📍 Ghim</button><button id="lk">🔑 Kích hoạt</button><button id="lb">Lớp</button><button id="cb">Hiệu chỉnh</button><button id="a2" title="Chạm điểm trên bản vẽ, rồi chạm đúng điểm đó trên ảnh">Căn 2 chạm</button><button id="au" title="Tự khớp ranh với đường nét ảnh vệ tinh">Tự khớp ảnh</button><label title="Kinh tuyến trục VN-2000 (độ)">KTT <input id="cm" type="number" step="0.25" value="105"></label><select id="dt" title="Chuyển VN-2000 sang WGS84"><option value="0">Không dịch gốc</option><option value="1" selected>QĐ 05/2007 (7 tham số)</option></select><select id="mz" title="Mức ảnh vệ tinh tối đa"><option value="0">Ảnh: tự động</option><option value="18">Tối đa mức 18</option><option value="17">Tối đa mức 17</option><option value="16">Tối đa mức 16</option></select><select id="k0" title="Hệ số k0"><option value="0.9999">k0 0,9999 (3°)</option><option value="0.9996">k0 0,9996 (6°)</option></select></div>
+<div id="w"><div id="gmap"></div><canvas id="cv"></canvas><div id="hint"><div><img src="data:image/jpeg;base64,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" alt="M8 Mobile" width="112" height="112" style="display:block;margin:0 auto 14px;border-radius:24px;box-shadow:0 4px 18px rgba(0,0,0,.5)"><b style="display:block;color:#fff;font-size:20px;margin:-2px 0 10px">M8 Mobile</b>Bấm “Mở” để chọn file .dgn (MicroStation V8)<br>Bản đồ được lưu trong “Thư viện” trên máy này và tự mở lại lần sau.<br>Dữ liệu chỉ xử lý trên máy, không tải lên đâu cả.<small id="ver" style="display:block;margin-top:10px;opacity:.55">Phiên bản 2026-10-23-e</small></div></div>
+<div id="lv"></div><div id="ll"></div><div id="lcb">🔑 Bản dùng thử (khóa Chỉ đường) · bấm để kích hoạt</div><div id="cl"><b>Hiệu chỉnh bằng điểm chuẩn</b><p>1) Ghim đúng một điểm rõ nét (góc nhà, ngã ba đường). 2) Bấm “Mở Google Maps”, giữ lâu đúng điểm đó trên ảnh vệ tinh Google, chạm tọa độ để sao chép. 3) Dán vào ô dưới rồi bấm Thêm. Càng nhiều điểm (nên ≥3, rải đều) càng chính xác.</p><input id="cc" placeholder="Dán: 21.43961, 105.54112"><button id="ca">Thêm điểm chuẩn từ ghim</button><button id="cx">Xóa hiệu chỉnh</button><p id="cs"></p></div><div id="fw"><b>⚠ Đang xem trong khung xem trước, không phải trình duyệt.</b> Ảnh vệ tinh và vị trí hiện tại bị chặn ở đây. Hãy mở bằng Safari/Chrome từ một địa chỉ web https (đưa file lên nơi lưu trữ web, xem 🩺 Chẩn đoán). <button id="fwx">Đóng</button></div>
+<div id="gi"><div id="gt"></div><div id="gb"><button id="gc">⌖ Căn giữa</button><button id="gf" title="Bản đồ tự chạy theo vị trí của bạn">Bám theo</button><button id="gh" title="Quay lại toàn bộ bản đồ">⤢ Về bản đồ</button><button id="gpn">📍 Ghim</button><button id="gcp">Sao chép</button><button id="gx">Tắt</button></div></div>
+<div id="rb"><div id="rt"></div><div id="rbb"><button id="rd" class="on">↔ Khoảng cách</button><button id="ra">▱ Diện tích</button><button id="rg" title="Thêm vị trí hiện tại của bạn làm một điểm đo">◎ Điểm tại vị trí tôi</button><button id="ru">↶ Bỏ điểm cuối</button><button id="rc">Xóa hết</button><button id="rp">Sao chép</button><button id="rx">Thoát</button></div></div>
+<div id="sb"><span id="sc"></span><div id="sbb"><button id="sdel">🗑 Xóa</button><button id="smv">✥ Di chuyển</button><button id="sed">✎ Sửa chữ</button><button id="sbx" title="Kéo khung để chọn nhiều đối tượng">▭ Khung</button><button id="sclr">Bỏ chọn</button><button id="sun" title="Hoàn tác">↶</button><button id="sre" title="Làm lại">↷</button><button id="sx">Thoát</button></div></div><div id="pp"><span id="pt"></span><a id="gm" target="_blank" rel="noopener">Mở Google Maps</a><a id="gd" target="_blank" rel="noopener">Chỉ đường</a><button id="cp">Sao chép</button><button id="px">Xóa ghim</button></div></div>
+<div id="ed"><div><b>Sửa chữ</b><input id="edt" type="text" placeholder="Nội dung chữ" autocomplete="off"><label>Cao chữ (m) <input id="edh" type="number" step="0.1" min="0.01"></label><p id="edm"></p><button id="edok" class="btn p">Lưu</button> <button id="edx">Hủy</button></div></div>
+<div id="dg"><div><b>🩺 Chẩn đoán M8 Mobile</b><pre id="dgt"></pre><button id="dgc">Sao chép báo cáo</button> <button id="dgr" title="Xóa bộ nhớ đệm của ứng dụng rồi tải lại bản mới nhất (bản đồ và cài đặt vẫn giữ)">↻ Xóa bộ nhớ đệm &amp; tải lại</button> <button id="dgx">Đóng</button></div></div>
+<div id="lc"><div><b>Kích hoạt M8 Mobile</b><p id="lct"></p><textarea id="lcin" placeholder="Dán mã kích hoạt (bắt đầu bằng MAPDGN-…)"></textarea><p id="lcm"></p><p id="lcc" style="font-weight:600">📞 Nguyễn Xuân Thủy: <a href="tel:0972839747" style="color:inherit">0972839747</a></p><button id="lcgo" class="btn p">Kích hoạt</button> <button id="lcx">Để sau</button></div></div>
+<div id="st">Chưa mở file</div>
+<script>
+async function inflate(u){const ds=new DecompressionStream('deflate'),w=ds.writable.getWriter();w.write(u);w.close();return new Uint8Array(await new Response(ds.readable).arrayBuffer());}
+const cat=a=>{let n=0;for(const x of a)n+=x.length;const o=new Uint8Array(n);let p=0;for(const x of a){o.set(x,p);p+=x.length}return o};
+function readOLE(buf){
+ if(![0xD0,0xCF,0x11,0xE0].every((b,i)=>buf[i]===b))return null;
+ const dv=new DataView(buf.buffer,buf.byteOffset,buf.byteLength),u32=(v,o)=>v.getUint32(o,true);
+ const ss=1<<dv.getUint16(30,true),mss=1<<dv.getUint16(32,true),nfat=u32(dv,44),dirS=u32(dv,48),cut=u32(dv,56),mfS=u32(dv,60);
+ let dif=u32(dv,68),nd=u32(dv,72);
+ const sec=n=>buf.subarray(512+n*ss,512+(n+1)*ss),V=b=>new DataView(b.buffer,b.byteOffset,b.byteLength);
+ let fs=[];for(let i=0;i<109;i++)fs.push(u32(dv,76+i*4));
+ while(dif<0xFFFFFFFA&&nd-->0){const v=V(sec(dif)),n=ss/4;for(let i=0;i<n-1;i++)fs.push(u32(v,i*4));dif=u32(v,(n-1)*4)}
+ fs=fs.filter(x=>x<0xFFFFFFFA).slice(0,nfat);
+ const fat=[];for(const f of fs){const v=V(sec(f));for(let i=0;i<ss/4;i++)fat.push(u32(v,i*4))}
+ const chain=n=>{const p=[],s=new Set();while(n<0xFFFFFFFA&&!s.has(n)){s.add(n);p.push(sec(n));n=fat[n]}return cat(p)};
+ const dd=chain(dirS),dV=V(dd),E=[];
+ for(let i=0;i<dd.length/128;i++){const o=i*128,nl=dV.getUint16(o+64,true);
+  E.push({name:new TextDecoder('utf-16le').decode(dd.subarray(o,o+Math.max(nl-2,0))),type:dd[o+66],l:u32(dV,o+68),r:u32(dV,o+72),c:u32(dV,o+76),start:u32(dV,o+116),size:u32(dV,o+120)})}
+ const ms=E[0].start<0xFFFFFFFA?chain(E[0].start).subarray(0,E[0].size):new Uint8Array(0);
+ let mf=[];if(mfS<0xFFFFFFFA){const b=chain(mfS),v=V(b);for(let i=0;i<b.length/4;i++)mf.push(u32(v,i*4))}
+ const read=e=>{if(e.size<cut){const p=[];let n=e.start;while(n<0xFFFFFFFA){p.push(ms.subarray(n*mss,(n+1)*mss));n=mf[n]}return cat(p).subarray(0,e.size)}return chain(e.start).subarray(0,e.size)};
+ const files={};
+ const walk=(i,path)=>{const go=j=>{if(j===0xFFFFFFFF)return;go(E[j].l);const k=E[j],p=path+'/'+k.name;if(k.type===2)files[p]=k;else if(k.type===1)walk(j,p);go(E[j].r)};go(E[i].c)};
+ walk(0,'');
+ return{files,read};
+}
+async function dec(u){if(u[0]===0x78)return inflate(u);if(u.length>17&&u[16]===0x78)return inflate(u.subarray(16));return null}
+const TC='ĂÂÊÔƠƯĐăâêôơưđ'; // 0xA1..0xAE
+const TL={0xB5:'à',0xB6:'ả',0xB7:'ã',0xB8:'á',0xB9:'ạ',0xBB:'ằ',0xBC:'ẳ',0xBD:'ẵ',0xBE:'ắ',0xC6:'ặ',0xC7:'ầ',0xC8:'ẩ',0xC9:'ẫ',0xCA:'ấ',0xCB:'ậ',0xCC:'è',0xCE:'ẻ',0xCF:'ẽ',0xD0:'é',0xD1:'ẹ',0xD2:'ề',0xD3:'ể',0xD4:'ễ',0xD5:'ế',0xD6:'ệ',0xD7:'ì',0xD8:'ỉ',0xDC:'ĩ',0xDD:'í',0xDE:'ị',0xDF:'ò',0xE1:'ỏ',0xE2:'õ',0xE3:'ó',0xE4:'ọ',0xE5:'ồ',0xE6:'ổ',0xE7:'ỗ',0xE8:'ố',0xE9:'ộ',0xEA:'ờ',0xEB:'ở',0xEC:'ỡ',0xED:'ớ',0xEE:'ợ',0xEF:'ù',0xF1:'ủ',0xF2:'ũ',0xF3:'ú',0xF4:'ụ',0xF5:'ừ',0xF6:'ử',0xF7:'ữ',0xF8:'ứ',0xF9:'ự',0xFA:'ỳ',0xFB:'ỷ',0xFC:'ỹ',0xFD:'ý',0xFE:'ỵ'};
+function tcvn(b){let s='';for(const c of b){s+=c>=0xA1&&c<=0xAE?TC[c-0xA1]:TL[c]||String.fromCharCode(c)}return s}
+function dtxt(sb,hi){if(sb[0]===255&&sb[1]===254){const r=sb.subarray(2);let u=r.length%2===0;if(u)for(let i=1;i<r.length;i+=2)if(r[i]>31){u=false;break}return u?new TextDecoder('utf-16le').decode(r):tcvn(r.subarray(2))}return hi?tcvn(sb):new TextDecoder('latin1').decode(sb)}
+async function parseDGN(buf){
+ const o=readOLE(buf);if(!o)throw new Error('Không phải DGN V8 (OLE). File DGN V7 chưa được hỗ trợ.');
+ const F=Object.keys(o.files),models={};
+ for(const p of F){const m=p.match(/^\/Dgn-Md\/(#[^/]+)\/Dgn\^G\/\$(\d+)$/);if(m)(models[m[1]]??=[]).push([+m[2],p])}
+ // palette
+ let pal=null;const pat=[255,255,255,0,0,255,0,255,0,255,0,0];
+ for(const p of F){if(p.includes('Dgn^G')||p.includes('Dgn^Ix'))continue;const d=await dec(o.read(o.files[p])).catch(()=>null);if(!d)continue;
+  outer:for(let i=0;i<d.length-768;i++){for(let k=0;k<12;k++)if(d[i+k]!==pat[k])continue outer;pal=d.slice(i,i+768);break}if(pal)break}
+ const out={models:{},pal,stats:{}};
+ for(const id in models){
+  let org=[0,0];const mh=F.find(p=>p==='/Dgn-Md/'+id+'/Dgn~Mh');
+  if(mh){const d=await dec(o.read(o.files[mh]));if(d){const v=new DataView(d.buffer,d.byteOffset,d.byteLength);
+   for(let i=0;i+16<=d.length;i+=4){const a=v.getFloat64(i,true),b=v.getFloat64(i+8,true);
+    if(Math.abs(a)>=1e6&&Math.abs(b)>=1e6&&a%1000===0&&b%1000===0&&Math.abs(a)<1e13&&Math.abs(b)<1e13){org=[a,b];break}}}}
+  const prims=[],un={};
+  for(const [,p] of models[id].sort((a,b)=>a[0]-b[0])){
+   const d=await dec(o.read(o.files[p]));if(!d||d.length<20)continue;const v=new DataView(d.buffer,d.byteOffset,d.byteLength);
+   for(let pos=4;pos+104<=d.length;){
+    const fl=v.getUint32(pos,true),sz=v.getUint32(pos+4,true)*2,ao=v.getUint32(pos+8,true)*2;if(!sz||pos+sz>d.length)break;
+    const t=fl&0xff,lv=v.getUint32(pos+12,true),st=v.getInt32(pos+44,true),w=v.getUint32(pos+48,true),c=v.getUint32(pos+52,true);
+    const f=o=>v.getFloat64(pos+o,true),b={t,lv,c:c>255?0:c,w,st};
+    if(t===3){const nd=(ao-104)/16;if(nd===2)prims.push({...b,k:'L',p:[f(104),f(112),f(120),f(128)]});else un[t]=(un[t]||0)+1}
+    else if(t===4||t===6){const n=v.getUint32(pos+104,true),nd=(ao-112)/(n*8);if(nd===2&&n>1){const p=[];for(let i=0;i<n;i++)p.push(f(112+i*16),f(120+i*16));prims.push({...b,k:t===6?'S':'L',p})}else un[t]=(un[t]||0)+1}
+    else if(t===15){if(ao-104===40)prims.push({...b,k:'E',e:[f(104),f(112),f(120),f(128),f(136)]});else un[t]=(un[t]||0)+1}
+    else if(t===17){const n=v.getUint32(pos+108,true)>>>16,sb=d.subarray(pos+170,pos+170+n);let hi=false;for(const x of sb)if(x>=0xA1)hi=true;
+     prims.push({...b,k:'T',x:f(152),y:f(160),h:f(136),w:f(128),r:f(144),s:dtxt(sb,hi),font:v.getUint16(pos+108,true)})}
+    else if(t!==2&&t!==7)un[t]=(un[t]||0)+1;
+    pos+=sz+4}}
+  out.models[id]={prims,org,un};
+ }
+ return out;
+}
+
+
+const WA=6378137,WF=1/298.257223563,E2=WF*(2-WF),EP=E2/(1-E2),RAD=Math.PI/180;
+const MER=p=>WA*((1-E2/4-3*E2*E2/64-5*E2**3/256)*p-(3*E2/8+3*E2*E2/32+45*E2**3/1024)*Math.sin(2*p)+(15*E2*E2/256+45*E2**3/1024)*Math.sin(4*p)-35*E2**3/3072*Math.sin(6*p));
+function tmFwd(lat,lon,l0,k0){const p=lat*RAD,N=WA/Math.sqrt(1-E2*Math.sin(p)**2),T=Math.tan(p)**2,C=EP*Math.cos(p)**2,A=(lon-l0)*RAD*Math.cos(p);
+ return[500000+k0*N*(A+(1-T+C)*A**3/6+(5-18*T+T*T+72*C-58*EP)*A**5/120),k0*(MER(p)+N*Math.tan(p)*(A*A/2+(5-T+9*C+4*C*C)*A**4/24+(61-58*T+T*T+600*C-330*EP)*A**6/720))]}
+function tmInv(E,Nn,l0,k0){const x=E-500000,mu=Nn/k0/(WA*(1-E2/4-3*E2*E2/64-5*E2**3/256)),s=Math.sqrt(1-E2),e1=(1-s)/(1+s);
+ const f1=mu+(3*e1/2-27*e1**3/32)*Math.sin(2*mu)+(21*e1*e1/16-55*e1**4/32)*Math.sin(4*mu)+151*e1**3/96*Math.sin(6*mu)+1097*e1**4/512*Math.sin(8*mu);
+ const C=EP*Math.cos(f1)**2,T=Math.tan(f1)**2,N1=WA/Math.sqrt(1-E2*Math.sin(f1)**2),R1=WA*(1-E2)/(1-E2*Math.sin(f1)**2)**1.5,D=x/(N1*k0);
+ const lat=f1-N1*Math.tan(f1)/R1*(D*D/2-(5+3*T+10*C-4*C*C-9*EP)*D**4/24+(61+90*T+298*C+45*T*T-252*EP-3*C*C)*D**6/720);
+ const lon=l0*RAD+(D-(1+2*T+C)*D**3/6+(5-2*C+28*T-3*C*C+8*EP+24*T*T)*D**5/120)/Math.cos(f1);return[lat/RAD,lon/RAD]}
+
+
+const $=i=>document.getElementById(i),cv=$('cv'),ctx=cv.getContext('2d');
+let TAINT=false,gp=null,gw=null,gpf=0,PL=[],ggOn=false,gm=null,alMode=0,alPin=null,AU=[0,0],NT=0,NL=0,fname="",CAL={a:[1,0],b:[0,0],pts:[],rms:0},pin=null,satOn=true,pinMode=true,TL2=new Map(),R=null,M=null,pal=null,V={cx:0,cy:0,s:1},vis=new Set(),hits=[],hi=0,mark=null,raf=0,d=1;
+const DEF=['#fff','#00f','#0f0','#f00','#ff0','#f0f','#f80','#0ff'],DASH=[[],[3,4],[10,6],[12,4,3,4],[14,5],[2,4],[6,3,1,3],[16,8]];
+const col=c=>!c?'#fff':pal?`rgb(${pal[c*3]},${pal[c*3+1]},${pal[c*3+2]})`:DEF[c&7];
+const st=t=>$('st').textContent=t;
+const HP={t:[-191.90441429,-39.30318279,-111.45032835],r:[-0.00928836,0.01975479,-0.00427372].map(v=>v*Math.PI/648000),s:0.252906278e-6};
+function geo2ecef(la,lo,h){const p=la*RAD,l=lo*RAD,N=WA/Math.sqrt(1-E2*Math.sin(p)**2);return[(N+h)*Math.cos(p)*Math.cos(l),(N+h)*Math.cos(p)*Math.sin(l),(N*(1-E2)+h)*Math.sin(p)]}
+function ecef2geo(X,Y,Z){const lo=Math.atan2(Y,X),q=Math.hypot(X,Y);let p=Math.atan2(Z,q*(1-E2)),h=0;for(let i=0;i<6;i++){const N=WA/Math.sqrt(1-E2*Math.sin(p)**2);h=q/Math.cos(p)-N;p=Math.atan2(Z,q*(1-E2*N/(N+h)))}return[p/RAD,lo/RAD,h]}
+function helm(X,Y,Z){const[rx,ry,rz]=HP.r,k=1+HP.s;return[HP.t[0]+k*(X+rz*Y-ry*Z),HP.t[1]+k*(-rz*X+Y+rx*Z),HP.t[2]+k*(ry*X-rx*Y+Z)]}
+function vn2wgs(la,lo,h=0){const c=geo2ecef(la,lo,h),w=helm(...c);return ecef2geo(...w).slice(0,2)}
+function wgs2vn(la,lo,h=0){const w=geo2ecef(la,lo,h);let c=[w[0]-HP.t[0],w[1]-HP.t[1],w[2]-HP.t[2]];for(let i=0;i<4;i++){const f=helm(...c);c=[c[0]+w[0]-f[0],c[1]+w[1]-f[1],c[2]+w[2]-f[2]]}return ecef2geo(...c).slice(0,2)}
+
+
+const cmv=()=>+$('cm').value||105,k0v=()=>+$('k0').value;
+const T=(x,y)=>[CAL.a[0]*x-CAL.a[1]*y+CAL.b[0],CAL.a[0]*y+CAL.a[1]*x+CAL.b[1]];
+const Ti=(x,y)=>{const m=CAL.a[0]**2+CAL.a[1]**2,r=x-CAL.b[0],i=y-CAL.b[1];return[(r*CAL.a[0]+i*CAL.a[1])/m,(i*CAL.a[0]-r*CAL.a[1])/m]};
+const dtv=()=>$('dt').value==='1';
+const toLL0=(x,y)=>{const l=tmInv((x-M.org[0])/1000,(y-M.org[1])/1000,cmv(),k0v());return dtv()?vn2wgs(l[0],l[1]):l};
+const fromLL0=(la,lo)=>{const l=dtv()?wgs2vn(la,lo):[la,lo],e=tmFwd(l[0],l[1],cmv(),k0v());return[e[0]*1000+M.org[0],e[1]*1000+M.org[1]]};
+const toLL=(x,y)=>{const t=T(x,y);return toLL0(t[0],t[1])};
+function fitCal(){const P=CAL.pts,n=P.length;if(!n||!M){CAL.a=[1,0];CAL.b=[AU[0],AU[1]];CAL.rms=0;return}
+ const Z=P.map(p=>[p.x,p.y]),W=P.map(p=>fromLL0(p.la,p.lo)),mn=A=>[A.reduce((s,z)=>s+z[0],0)/n,A.reduce((s,z)=>s+z[1],0)/n],mz=mn(Z),mw=mn(W);let a=[1,0];
+ if(n>1){let nr=0,ni=0,dn=0;for(let i=0;i<n;i++){const zr=Z[i][0]-mz[0],zi=Z[i][1]-mz[1],wr=W[i][0]-mw[0],wi=W[i][1]-mw[1];nr+=zr*wr+zi*wi;ni+=zr*wi-zi*wr;dn+=zr*zr+zi*zi}if(dn)a=[nr/dn,ni/dn]}
+ CAL.a=a;CAL.b=[mw[0]-(a[0]*mz[0]-a[1]*mz[1])+AU[0],mw[1]-(a[0]*mz[1]+a[1]*mz[0])+AU[1]];
+ let s=0;for(let i=0;i<n;i++){const t=T(Z[i][0],Z[i][1]);s+=(t[0]-W[i][0])**2+(t[1]-W[i][1])**2}CAL.rms=Math.sqrt(s/n)/1000}
+function calUI(){const n=CAL.pts.length;const au=AU[0]||AU[1]?` Tự khớp ảnh: ΔE=${(AU[0]/1000).toFixed(1)} m, ΔN=${(AU[1]/1000).toFixed(1)} m.`:'';if(!n){$('cs').textContent='Chưa có điểm chuẩn.'+au;return}
+ const c=T(V.cx,V.cy),sc=(Math.hypot(CAL.a[0],CAL.a[1])-1)*1e6,ang=Math.atan2(CAL.a[1],CAL.a[0])*206265;
+ $('cs').innerHTML=`${n} điểm · dịch ΔE=${((c[0]-V.cx)/1000).toFixed(2)} m, ΔN=${((c[1]-V.cy)/1000).toFixed(2)} m`+(n>1?` · xoay ${ang.toFixed(1)}″ · tỉ lệ ${sc.toFixed(0)} ppm · <b>sai số dư RMS ${CAL.rms.toFixed(2)} m</b>`+(Math.abs(sc)>300||Math.abs(ang)>120?' ⚠ bất thường, kiểm tra lại điểm chuẩn':''):' · cần ≥3 điểm để biết độ chính xác')}
+function saveCal(){try{localStorage.setItem('dgncal:'+fname,JSON.stringify(CAL.pts));localStorage.setItem('dgnau:'+fname,JSON.stringify(AU))}catch(e){}}
+function loadCal(){try{CAL.pts=JSON.parse(localStorage.getItem('dgncal:'+fname)||'[]')}catch(e){CAL.pts=[]}try{AU=JSON.parse(localStorage.getItem('dgnau:'+fname)||'[0,0]')}catch(e){AU=[0,0]}fitCal();calUI()}
+const fromLL=(la,lo)=>{const u=fromLL0(la,lo);return Ti(u[0],u[1])};
+const t2l=(tx,ty,n)=>[Math.atan(Math.sinh(Math.PI*(1-2*ty/n)))/RAD,tx/n*360-180];
+const zmx=()=>+$('mz').value||18;
+function blankTile(t){try{const c=document.createElement('canvas');c.width=c.height=16;const x=c.getContext('2d');x.drawImage(t,0,0,16,16);const d=x.getImageData(0,0,16,16).data;let g=0,mn=255,mx=0;for(let i=0;i<d.length;i+=4){if(Math.abs(d[i]-d[i+1])<7&&Math.abs(d[i+1]-d[i+2])<7&&d[i]>165&&d[i]<240)g++;if(d[i]<mn)mn=d[i];if(d[i]>mx)mx=d[i]}return g>190&&mx-mn<70}catch(e){TAINT=true;return false}}
+/*SAT-BEGIN*/
+// Ảnh vệ tinh Esri: 2 máy chủ (chính + dự phòng). Nếu máy chủ chính không tải được tấm ảnh nào thì tự chuyển sang dự phòng; hỏng cả hai thì báo rõ trên thanh trạng thái.
+const SATU=[(z,x,y)=>`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`,(z,x,y)=>`https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`];
+let SP=0,TERR=0,TOK=0,TMSG=0,TZ=0,CUST='';try{CUST=localStorage.getItem('dgntile')||''}catch(e){}
+// nguồn ảnh: (nếu người dùng đặt) nguồn tùy chọn → Esri chính → Esri dự phòng
+const satFns=()=>CUST?[(z,x,y)=>CUST.replace(/\{z\}/g,z).replace(/\{x\}/g,x).replace(/\{y\}/g,y),...SATU]:SATU;
+const satNames=()=>CUST?['Nguồn tùy chọn','Esri chính','Esri dự phòng']:['Esri chính','Esri dự phòng'];
+function tileFail(sp){if(sp!==SP||TOK>0||++TERR<3)return;
+ if(SP<satFns().length-1){SP++;TERR=0;for(const[k,t]of[...TL2])if(!(t.complete&&t.naturalWidth))TL2.delete(k);st('Máy chủ ảnh vệ tinh chính không phản hồi — đã chuyển sang máy chủ dự phòng');redraw()}
+ else{if(Date.now()-TMSG>8000){TMSG=Date.now();st('Không tải được ảnh vệ tinh Esri (mất mạng hoặc mạng đang chặn máy chủ ảnh). Bản vẽ vẫn dùng bình thường — bấm ⚙ → 🩺 Chẩn đoán để biết nguyên nhân.')}redraw()}}
+function tile(z,x,y){const k=z+'/'+x+'/'+y;let t=TL2.get(k);if(!t){if(TL2.size>500)TL2.clear();const fn=satFns(),u=fn[Math.min(SP,fn.length-1)](z,x,y),sp=SP;t=new Image();t.crossOrigin='anonymous';t.onload=()=>{TOK++;t.__b=blankTile(t);redraw()};t.onerror=()=>{if(t.crossOrigin){t.crossOrigin=null;t.removeAttribute('crossorigin');t.src=u+'?nc';return}t.__f=1;tileFail(sp)};t.src=u;TL2.set(k,t)}return t}
+function tiles(X,Y,x0,x1,y0,y1,cx2=ctx){NT=0;NL=0;const c=toLL((x0+x1)/2,(y0+y1)/2);let z=Math.max(3,Math.min(zmx(),Math.round(Math.log2(156543.03*Math.cos(c[0]*RAD)*(V.s/d)*1000)))),n,a,b,e,f;
+ const cs=[[x0,y0],[x1,y0],[x0,y1],[x1,y1]].map(p=>toLL(p[0],p[1]));
+ for(;;){n=2**z;const tx=cs.map(l=>(l[1]+180)/360*n),ty=cs.map(l=>(1-Math.log(Math.tan(l[0]*RAD)+1/Math.cos(l[0]*RAD))/Math.PI)/2*n);
+  a=Math.floor(Math.min(...tx));b=Math.floor(Math.max(...tx));e=Math.floor(Math.min(...ty));f=Math.floor(Math.max(...ty));
+  if((b-a+1)*(f-e+1)<=90||z<=3)break;z--} // khung nhìn quá rộng: giảm mức ảnh thay vì bỏ trống
+ TZ=z;if((b-a+1)*(f-e+1)>90)return;
+ const P=(i,j)=>{const l=t2l(i,j,n),u=fromLL(l[0],l[1]);return[X(u[0]),Y(u[1])]};
+ for(let i=a;i<=b;i++)for(let j=e;j<=f;j++){let t=tile(z,i,j),lz=0,ci=i,cj=j;NT++;if(!t.complete||!t.naturalWidth)continue;NL++;
+  while(t.__b&&lz<4&&z-lz>3){lz++;ci>>=1;cj>>=1;t=tile(z-lz,ci,cj);if(!t.complete||!t.naturalWidth)break}
+  if(!t.complete||!t.naturalWidth||(t.__b&&lz>0))continue;
+  const A=P(i,j),B=P(i+1,j),C=P(i,j+1),k=t.naturalWidth/2**lz;
+  cx2.setTransform((B[0]-A[0])/k,(B[1]-A[1])/k,(C[0]-A[0])/k,(C[1]-A[1])/k,A[0],A[1]);cx2.drawImage(t,(i-(ci<<lz))*k,(j-(cj<<lz))*k,k,k,0,0,k,k)}
+ cx2.setTransform(1,0,0,1,0,0)}
+/*SAT-END*/
+function setPin(p){pin=p;const pp=$('pp');if(!p){pp.style.display='none';draw();return}const l=toLL(p.x,p.y),q=l[0].toFixed(6)+','+l[1].toFixed(6);
+ const dc=p.sn?3:2;
+ $('pt').textContent=(p.sn?'🧲 Đã bắt điểm  ·  ':'')+(nearP(p)?'Thửa gần nhất: '+nearP(p)+'  ·  ':'')+`Vĩ độ, kinh độ: ${l[0].toFixed(6)}, ${l[1].toFixed(6)}  ·  VN-2000: X=${((p.y-M.org[1])/1000).toFixed(dc)} Y=${((p.x-M.org[0])/1000).toFixed(dc)}`;
+ $('gm').href='https://www.google.com/maps/search/?api=1&query='+q;$('gd').href='https://www.google.com/maps/dir/?api=1&travelmode=driving&destination='+q;pp.style.display=(msOn||selMode)?'none':'flex';draw()}
+$('sat').onclick=e=>{satOn=!satOn;e.target.classList.toggle('on',satOn);draw()};
+$('pn').onclick=e=>{pinMode=!pinMode;e.target.classList.toggle('on',pinMode);st(pinMode?'Chạm vào bản đồ để đặt ghim':'Đã tắt chế độ ghim')};
+$('px').onclick=()=>setPin(null);$('cp').onclick=()=>navigator.clipboard&&navigator.clipboard.writeText($('pt').textContent.match(/-?\d+\.\d{6}, -?\d+\.\d{6}/)[0]);
+$('cm').oninput=$('k0').onchange=$('dt').onchange=()=>{fitCal();calUI();if(pin)setPin(pin);draw()};
+function bbl(a,W,H,r){const t=new Float32Array(a.length),o=new Float32Array(a.length),k=2*r+1,mx=(v,m)=>v<0?0:v>m?m:v;
+ for(let y=0;y<H;y++){let s=0;const b=y*W;for(let x=-r;x<=r;x++)s+=a[b+mx(x,W-1)];for(let x=0;x<W;x++){t[b+x]=s/k;s+=a[b+mx(x+r+1,W-1)]-a[b+mx(x-r,W-1)]}}
+ for(let x=0;x<W;x++){let s=0;for(let y=-r;y<=r;y++)s+=t[mx(y,H-1)*W+x];for(let y=0;y<H;y++){o[y*W+x]=s/k;s+=t[mx(y+r+1,H-1)*W+x]-t[mx(y-r,H-1)*W+x]}}return o}
+async function autoAlign(){if(!M||!satOn){st('Bật “Vệ tinh” và mở file DGN trước');return}
+ st('Đang khớp ranh với ảnh vệ tinh …');await new Promise(r=>setTimeout(r,30));
+ const W=cv.width,H=cv.height,{cx,cy,s}=V,X=x=>(x-cx)*s+W/2,Y=y=>H/2-(y-cy)*s,x0=cx-W/2/s,x1=cx+W/2/s,y0=cy-H/2/s,y1=cy+H/2/s,wk=s*1000;
+ const oc=document.createElement('canvas');oc.width=W;oc.height=H;const o=oc.getContext('2d');o.fillStyle='#000';o.fillRect(0,0,W,H);tiles(X,Y,x0,x1,y0,y1,o);
+ if(!NT||NL<NT){st('Ảnh vệ tinh chưa tải xong (hoặc đang tắt). Đợi vài giây rồi bấm lại.');return}
+ if(wk<.25){st('Hãy phóng to vào khu vực có thửa (ít nhất ~0,3 điểm ảnh/mét) rồi bấm lại.');return}
+ let D;try{D=o.getImageData(0,0,W,H).data}catch(e){st('Trình duyệt chặn đọc ảnh vệ tinh (CORS). Hãy dùng “Hiệu chỉnh” bằng điểm chuẩn.');return}
+ const gr=new Float32Array(W*H);for(let i=0;i<W*H;i++)gr[i]=.299*D[4*i]+.587*D[4*i+1]+.114*D[4*i+2];
+ const gs=bbl(gr,W,H,1),G=new Float32Array(W*H);
+ for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const i=y*W+x;G[i]=Math.hypot(gs[i-W+1]+2*gs[i+1]+gs[i+W+1]-gs[i-W-1]-2*gs[i-1]-gs[i+W-1],gs[i+W-1]+2*gs[i+W]+gs[i+W+1]-gs[i-W-1]-2*gs[i-W]-gs[i-W+1])}
+ let pts=[];const stp=Math.max(2,wk);
+ for(const p of M.prims){if(p.k==='T'||p.k==='E'||!vis.has(p.lv))continue;const q=p.b;if(q[2]<x0||q[0]>x1||q[3]<y0||q[1]>y1)continue;const a=p.p,n=a.length,m=p.k==='S'?n:n-2;
+  for(let i=0;i<m;i+=2){const j=(i+2)%n,ax=X(a[i]),ay=Y(a[i+1]),bx=X(a[j]),by=Y(a[j+1]),c=Math.max(1,Math.floor(Math.hypot(bx-ax,by-ay)/stp));for(let k=0;k<c;k++)pts.push(ax+(bx-ax)*k/c,ay+(by-ay)*k/c)}}
+ const th=Math.ceil(pts.length/2/8000);if(th>1){const t=[];for(let i=0;i<pts.length;i+=2*th)t.push(pts[i],pts[i+1]);pts=t}
+ if(pts.length<400){st('Quá ít đường ranh trong khung nhìn để khớp.');return}
+ const sc=(A,dx,dy)=>{let u=0,c=0;for(let i=0;i<pts.length;i+=2){const x=Math.round(pts[i]+dx),y=Math.round(pts[i+1]+dy);if(x>=0&&x<W&&y>=0&&y<H){u+=A[y*W+x];c++}}return c>pts.length/4?u/c:0};
+ const srch=(A,R,sp,ox,oy)=>{let b=-1,bx=ox,by=oy;const all=[];for(let dy=-R;dy<=R;dy+=sp)for(let dx=-R;dx<=R;dx+=sp){const v=sc(A,ox+dx,oy+dy);all.push(v);if(v>b){b=v;bx=ox+dx;by=oy+dy}}return{b,bx,by,all}};
+ const r1=srch(bbl(G,W,H,Math.max(1,Math.round(6*wk))),Math.round(150*wk),Math.max(1,Math.round(5*wk)),0,0);
+ const r2=srch(bbl(G,W,H,Math.max(1,Math.round(1.5*wk))),Math.round(7*wk),Math.max(1,Math.round(wk)),r1.bx,r1.by);
+ const r3=srch(bbl(G,W,H,Math.max(1,Math.round(.6*wk))),Math.round(1.5*wk),Math.max(1,Math.round(.4*wk)),r2.bx,r2.by);
+ const mu=r1.all.reduce((a,b)=>a+b,0)/r1.all.length,sd=Math.sqrt(r1.all.reduce((a,b)=>a+(b-mu)**2,0)/r1.all.length)||1,z=(r1.b-mu)/sd,dE=r3.bx/wk,dN=-r3.by/wk;
+ if(z<3){st(`Không đủ đặc trưng để khớp tin cậy (z=${z.toFixed(1)}). Hãy dùng điểm chuẩn.`);return}
+ AU[0]+=r3.bx/s;AU[1]+=-r3.by/s;fitCal();saveCal();calUI();if(pin)setPin(pin);draw();
+ st(`Đã khớp: dịch ranh ΔE=${dE.toFixed(1)} m, ΔN=${dN.toFixed(1)} m · độ tin cậy z=${z.toFixed(1)} (≥5 là tốt). Bấm lại để tinh chỉnh.`)}
+$('au').onclick=autoAlign;
+$('gg').onclick=e=>{if(ggOn){ggOn=false;e.target.classList.remove('on');$('gmap').style.display='none';draw();return}
+ ggLoad(()=>{if(!gm){gm=new google.maps.Map($('gmap'),{mapId:'DEMO_MAP_ID',mapTypeId:'satellite',disableDefaultUI:true,gestureHandling:'none',keyboardShortcuts:false,isFractionalZoomEnabled:true,center:{lat:21.4,lng:105.5},zoom:17});
+  gm.addListener('idle',()=>{const z=gm.getZoom();if(ggOn&&gm.__w&&Math.abs(z-gm.__w)>.05&&M){const c=toLL(V.cx,V.cy);V.s=2**z/(156543.03*Math.cos(c[0]*RAD)*1000)*d;draw()}})}
+  ggOn=true;satOn=false;e.target.classList.add('on');const sb=$('sat');sb&&sb.classList.remove('on');$('gmap').style.display='block';draw()})};
+$('a2').onclick=e=>{alMode=alMode?0:1;alPin=null;e.target.classList.toggle('on',alMode>0);st(alMode?'Bước 1: chạm một điểm rõ nét TRÊN BẢN VẼ (góc thửa, góc nhà)':'Đã tắt căn 2 chạm')};
+$('cb').onclick=()=>{const l=$('cl');l.style.display=l.style.display==='block'?'none':'block';calUI()};
+$('ca').onclick=()=>{if(!pin){$('cs').textContent='Hãy ghim một điểm trước.';return}const m=($('cc').value.match(/-?\d+(?:\.\d+)?/g)||[]).map(Number);if(m.length<2){$('cs').textContent='Chưa đọc được tọa độ (dạng: 21.43961, 105.54112).';return}
+ let[la,lo]=m;if(la>90||la>lo)[la,lo]=[lo,la];if(la<8||la>24||lo<102||lo>110){$('cs').textContent='Tọa độ nằm ngoài lãnh thổ Việt Nam, kiểm tra lại.';return}
+ const t=T(pin.x,pin.y),ti=Ti(t[0],t[1]);AU=[0,0];CAL.pts.push({x:pin.x,y:pin.y,la,lo});fitCal();saveCal();$('cc').value='';calUI();setPin(pin);draw()};
+$('cx').onclick=()=>{AU=[0,0];CAL.pts=[];fitCal();saveCal();calUI();if(pin)setPin(pin);draw()};
+function scrLL(px,py){if(ggOn&&gm){const c=toLL(V.cx,V.cy),z=gm.__w,Wd=256*2**z,cwx=(c[1]+180)/360*Wd,cwy=(1-Math.log(Math.tan(c[0]*RAD)+1/Math.cos(c[0]*RAD))/Math.PI)/2*Wd,tx=cwx+(px-cv.width/2)/d,ty=cwy+(py-cv.height/2)/d;
+  return[Math.atan(Math.sinh(Math.PI*(1-2*ty/Wd)))/RAD,tx/Wd*360-180]}return toLL((px-cv.width/2)/V.s+V.cx,V.cy+(cv.height/2-py)/V.s)}
+/*SNAP-BEGIN*/
+// Bắt điểm: chỉ mục k-d tree trên MỌI đầu mút/đỉnh của đoạn thẳng, polyline, shape (tọa độ gốc DGN, double – không làm tròn)
+let snapOn=false,SN=null,snapPrev=null;const SNAP_PX=26;
+function kdSel(ix,K,lo,hi,k){while(hi>lo){const pv=K[ix[(lo+hi)>>1]];let i=lo,j=hi;
+ while(i<=j){while(K[ix[i]]<pv)i++;while(K[ix[j]]>pv)j--;if(i<=j){const t=ix[i];ix[i]=ix[j];ix[j]=t;i++;j--}}
+ if(k<=j)hi=j;else if(k>=i)lo=i;else return}}
+function buildSnap(prims){let n=0;for(const p of prims){if(p.k==='T'||p.k==='E')continue;n+=p.p.length>>1}
+ const X=new Float64Array(n),Y=new Float64Array(n),L=new Int32Array(n),ix=new Uint32Array(n);let m=0;
+ for(const p of prims){if(p.k==='T'||p.k==='E')continue;const a=p.p;for(let i=0;i+1<a.length;i+=2){X[m]=a[i];Y[m]=a[i+1];L[m]=p.lv;ix[m]=m;m++}}
+ const bd=(lo,hi,dp)=>{if(hi-lo<2)return;const mid=(lo+hi)>>1;kdSel(ix,dp&1?Y:X,lo,hi-1,mid);bd(lo,mid,dp+1);bd(mid+1,hi,dp+1)};
+ bd(0,n,0);return{ix,X,Y,L,n}}
+function snapFind(wx,wy,r){if(!SN)return null;const{ix,X,Y,L}=SN;let bd=r*r,bi=-1;
+ const q=(lo,hi,dp)=>{if(lo>=hi)return;const m=(lo+hi)>>1,i=ix[m],dx=X[i]-wx,dy=Y[i]-wy;
+  if(vis.has(L[i])){const dd=dx*dx+dy*dy;if(dd<bd||(dd===bd&&bi<0)){bd=dd;bi=i}}
+  const df=dp&1?dy:dx;
+  if(df>0){q(lo,m,dp+1);if(df*df<=bd)q(m+1,hi,dp+1)}else{q(m+1,hi,dp+1);if(df*df<=bd)q(lo,m,dp+1)}};
+ q(0,SN.n,0);return bi<0?null:{i:bi,x:X[bi],y:Y[bi],lv:L[bi],d:Math.sqrt(bd)}}
+function snapMark(x,y,c,dash){const{cx,cy,s}=V,px=(x-cx)*s+cv.width/2,py=cv.height/2-(y-cy)*s,r=9*d;
+ ctx.save();ctx.setLineDash(dash?[4*d,3*d]:[]);ctx.lineWidth=2.5*d;ctx.strokeStyle='#000';ctx.strokeRect(px-r,py-r,2*r,2*r);ctx.lineWidth=1.5*d;ctx.strokeStyle=c;ctx.strokeRect(px-r,py-r,2*r,2*r);
+ ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(px-r*1.6,py);ctx.lineTo(px+r*1.6,py);ctx.moveTo(px,py-r*1.6);ctx.lineTo(px,py+r*1.6);ctx.stroke();ctx.restore()}
+// Điểm gần nhất nằm TRÊN CẠNH (khi không có đỉnh nào trong tầm bắt)
+function snapEdge(wx,wy,r){let bd=r,bx=0,by=0,bl=0,f=false;const x0=wx-r,x1=wx+r,y0=wy-r,y1=wy+r;
+ for(const p of M.prims){if(p.k==='T'||p.k==='E'||!vis.has(p.lv))continue;const q=p.b;if(q[2]<x0||q[0]>x1||q[3]<y0||q[1]>y1)continue;const a=p.p,n=a.length,m=p.k==='S'?n:n-2;
+  for(let i=0;i<m;i+=2){const j=(i+2)%n,ax=a[i],ay=a[i+1],dx=a[j]-ax,dy=a[j+1]-ay,l=dx*dx+dy*dy;let t=l?((wx-ax)*dx+(wy-ay)*dy)/l:0;t=t<0?0:t>1?1:t;const px=ax+t*dx,py=ay+t*dy,dd=Math.hypot(wx-px,wy-py);if(dd<bd){bd=dd;bx=px;by=py;bl=p.lv;f=true}}}
+ return f?{x:bx,y:by,lv:bl,d:bd}:null}
+// Bắt tự động: ưu tiên ĐỈNH/ĐẦU ĐOẠN (k=1), nếu không có thì điểm trên cạnh (k=2), không có gì thì null
+function snapPick(wx,wy,mul=1){if(!SN&&M)SN=buildSnap(M.prims);const r=SNAP_PX*d/V.s*mul,h=snapFind(wx,wy,r);
+ return h?{x:h.x,y:h.y,k:1,lv:h.lv,d:h.d,r}:null}
+function setSnap(on){snapOn=on;msAuto=on;$('sn').classList.toggle('on',on);snapPrev=null;if(on&&!SN&&M)SN=buildSnap(M.prims);draw()}
+$('sn').onclick=async e=>{if(!M){st('Hãy mở bản đồ trước');return}
+ if(snapOn){setSnap(false);st('Đã tắt bắt điểm');return}
+ st('Đang dựng chỉ mục điểm …');await new Promise(r=>setTimeout(r,30));setSnap(true);
+ st(`Bắt điểm BẬT · ${SN.n} đầu đoạn/đỉnh · chạm gần một đầu đoạn thẳng để ghim đúng điểm đó`)};
+/*SNAP-END*/
+/*EDIT-BEGIN*/
+// Chọn / xóa / di chuyển / sửa chữ. Thay đổi lưu theo từng file trong trình duyệt (không ghi đè file DGN gốc).
+let selMode=false,mvMode=false,boxOn=false,mvDrag=false,mvGrab=false,boxR=null,mvOff=[0,0],MID=0;const SEL=new Set(),mv={ph:0,b:null},SELPX=16;
+const EKEY=()=>'dgnedit:'+fname+':'+MID;
+function shiftP(p,dx,dy){if(p.k==='T'){p.x+=dx;p.y+=dy}else if(p.k==='E'){p.e[3]+=dx;p.e[4]+=dy}else{const a=p.p;for(let i=0;i<a.length;i+=2){a[i]+=dx;a[i+1]+=dy}}
+ if(p.b){p.b[0]+=dx;p.b[1]+=dy;p.b[2]+=dx;p.b[3]+=dy}}
+function applyOp(op,rev){const by=M.byId;
+ if(op.t==='d'){if(rev){for(const id of op.ids){const p=by.get(id);if(p)M.prims.push(p)}M.prims.sort((a,b)=>a.id-b.id)}
+  else{const s=new Set(op.ids);M.prims=M.prims.filter(p=>!s.has(p.id));for(const id of op.ids)SEL.delete(by.get(id))}}
+ else if(op.t==='m'){const k=rev?-1:1;for(const id of op.ids){const p=by.get(id);if(p)shiftP(p,k*op.dx,k*op.dy)}}
+ else if(op.t==='t'){const p=by.get(op.id);if(p){p.s=rev?op.s0:op.s1;p.h=rev?op.h0:op.h1;p.tw=null;if(p.b)p.b[3]=p.y+p.h}}}
+function initEdits(){SEL.clear();mvOff=[0,0];mv.ph=0;mvDrag=false;boxR=null;
+ if(!M.byId){M.byId=new Map();M.prims.forEach((p,i)=>{p.id=i;M.byId.set(i,p)});M.redo=[];let o=[];
+  try{o=JSON.parse(localStorage.getItem(EKEY())||'[]')}catch(e){}if(!Array.isArray(o))o=[];
+  for(const op of o)applyOp(op,false);M.ops=o}
+ refreshSB()}
+function saveEdits(){try{if(M.ops.length)localStorage.setItem(EKEY(),JSON.stringify(M.ops));else localStorage.removeItem(EKEY())}catch(e){st('Không lưu được thay đổi vào bộ nhớ trình duyệt (có thể đã đầy)')}}
+function afterEdit(){saveEdits();M.bb=null;buildParcels();$('q').dataset.k='';SN=snapOn?buildSnap(M.prims):null;snapPrev=null;refreshSB();draw()}
+function commit(op){M.ops.push(op);M.redo.length=0;applyOp(op,false);afterEdit()}
+function undo(){const op=M.ops.pop();if(!op)return;M.redo.push(op);applyOp(op,true);afterEdit();st('Đã hoàn tác')}
+function redo(){const op=M.redo.pop();if(!op)return;M.ops.push(op);applyOp(op,false);afterEdit();st('Đã làm lại')}
+function twid(p){if(p.tw==null){ctx.save();ctx.font='100px Arial,sans-serif';p.tw=ctx.measureText(p.s).width/100;ctx.restore()}return p.tw*p.h*1.25}
+function segD(px,py,ax,ay,bx,by){const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy;let t=l?((px-ax)*dx+(py-ay)*dy)/l:0;t=t<0?0:t>1?1:t;return Math.hypot(px-ax-t*dx,py-ay-t*dy)}
+function hitTest(wx,wy,tol){let best=null,bs=Infinity;const x0=wx-tol,x1=wx+tol,y0=wy-tol,y1=wy+tol;
+ for(const p of M.prims){if(!vis.has(p.lv))continue;let sc=Infinity;
+  if(p.k==='T'){const fs=p.h*1.25;if(fs*V.s<5)continue;const dx=wx-p.x,dy=wy-p.y;if(Math.hypot(dx,dy)>p.s.length*fs*1.2+fs+tol)continue;
+   const c=Math.cos(p.r),s=Math.sin(p.r),u=dx*c+dy*s,v=-dx*s+dy*c,w=twid(p);if(u>=-tol&&u<=w+tol&&v>=-.3*fs-tol&&v<=.95*fs+tol)sc=-1}
+  else{const q=p.b;if(q[2]<x0||q[0]>x1||q[3]<y0||q[1]>y1)continue;
+   if(p.k==='E'){const e=p.e,dx=wx-e[3],dy=wy-e[4],c=Math.cos(e[2]),s=Math.sin(e[2]),u=dx*c+dy*s,v=-dx*s+dy*c,a=e[0]||1e-9,b=e[1]||1e-9,k=Math.hypot(u/a,v/b),dd=Math.abs(k-1)*Math.min(a,b);if(dd<=tol)sc=dd}
+   else{const a=p.p,n=a.length;let m=Infinity;for(let i=0;i+3<n;i+=2){const dd=segD(wx,wy,a[i],a[i+1],a[i+2],a[i+3]);if(dd<m)m=dd}
+    if(p.k==='S'&&n>=4){const dd=segD(wx,wy,a[n-2],a[n-1],a[0],a[1]);if(dd<m)m=dd}if(n===2)m=Math.hypot(wx-a[0],wy-a[1]);if(m<=tol)sc=m}}
+  if(sc<bs){bs=sc;best=p}}
+ return best}
+function descP(p){return p.k==='T'?`Chữ “${p.s}”`:p.k==='E'?'Đường tròn/elip':p.k==='S'?`Vùng kín (${p.p.length>>1} đỉnh)`:p.p.length===4?'Đoạn thẳng':`Đường gấp khúc (${p.p.length>>1} đỉnh)`}
+function refreshSB(){let nt=0;for(const p of SEL)if(p.k==='T')nt++;const n=SEL.size;if(!n&&mvMode){mvMode=false;mv.ph=0;mvOff=[0,0];mvDrag=false}
+ $('sc').textContent='Đã chọn: '+n+(nt?` (chữ: ${nt})`:'')+(mvMode?' · Kéo đối tượng đã chọn, hoặc chạm điểm gốc rồi điểm đích':boxOn?' · Kéo khung để chọn':'');
+ $('sdel').disabled=!n;$('smv').disabled=!n;$('sed').disabled=!(n===1&&nt===1);$('sclr').disabled=!n;
+ $('sun').disabled=!(M&&M.ops&&M.ops.length);$('sre').disabled=!(M&&M.redo&&M.redo.length);
+ $('smv').classList.toggle('on',mvMode);$('sbx').classList.toggle('on',boxOn)}
+function setMode(mm,bb){mvMode=mm;boxOn=bb;mv.ph=0;mvOff=[0,0];mvDrag=false;boxR=null;refreshSB();draw()}
+function selTap(px,py){if(!M)return;if(mvMode){moveTap(px,py);return}
+ const h=hitTest((px-cv.width/2)/V.s+V.cx,V.cy+(cv.height/2-py)/V.s,SELPX*d/V.s);
+ if(!h){st('Không có đối tượng tại điểm chạm — phóng to hoặc chạm sát nét vẽ hơn');return}
+ if(SEL.has(h))SEL.delete(h);else SEL.add(h);refreshSB();draw();st((SEL.has(h)?'Đã chọn: ':'Bỏ chọn: ')+descP(h)+' · lớp '+h.lv)}
+function selBox(b){const x=(a)=>(a-cv.width/2)/V.s+V.cx,y=(a)=>V.cy+(cv.height/2-a)/V.s;
+ const xa=Math.min(x(b[0]),x(b[2])),xb=Math.max(x(b[0]),x(b[2])),ya=Math.min(y(b[1]),y(b[3])),yb=Math.max(y(b[1]),y(b[3]));
+ if(Math.abs(b[2]-b[0])<6*d&&Math.abs(b[3]-b[1])<6*d){draw();return}let n=0;
+ for(const p of M.prims){if(!vis.has(p.lv))continue;const q=p.b;
+  const ok=p.k==='T'?(p.x>=xa&&p.x<=xb&&p.y>=ya&&p.y<=yb):(q[0]>=xa&&q[2]<=xb&&q[1]>=ya&&q[3]<=yb);if(ok&&!SEL.has(p)){SEL.add(p);n++}}
+ refreshSB();draw();st(`Chọn trong khung: thêm ${n} đối tượng`)}
+function commitMove(dx,dy){const ids=[...SEL].map(p=>p.id);commit({t:'m',ids,dx,dy});st(`Đã dời ${ids.length} đối tượng: ΔX(Bắc)=${(dy/1000).toFixed(3)} m, ΔY(Đông)=${(dx/1000).toFixed(3)} m (↶ để hoàn tác)`)}
+function moveTap(px,py){let p={x:(px-cv.width/2)/V.s+V.cx,y:V.cy+(cv.height/2-py)/V.s};
+ if(snapOn){const h=snapFind(p.x,p.y,SNAP_PX*d/V.s);if(!h){st('Không bắt được đầu đoạn thẳng — phóng to hoặc chạm gần điểm hơn');return}p={x:h.x,y:h.y}}
+ if(!mv.ph){mv.b=p;mv.ph=1;mvOff=[0,0];draw();st('Đã chọn điểm gốc. Chạm điểm đích để dời đối tượng');return}
+ const dx=p.x-mv.b.x,dy=p.y-mv.b.y;mv.ph=0;mvOff=[0,0];if(dx||dy)commitMove(dx,dy);else draw()}
+function drawSel(X,Y,s){if(!SEL.size)return;const ox=mvOff[0],oy=mvOff[1],C='#00e5ff';ctx.save();ctx.lineJoin='round';ctx.setLineDash([]);
+ for(const p of SEL){if(!vis.has(p.lv))continue;
+  if(p.k==='T'){const fs=p.h*s*1.25;ctx.save();ctx.translate(X(p.x+ox),Y(p.y+oy));ctx.rotate(-p.r);ctx.font=Math.max(fs,1)+'px Arial,sans-serif';const tw=ctx.measureText(p.s).width,m=3*d;
+   ctx.globalAlpha=.28;ctx.fillStyle=C;ctx.fillRect(-m,-fs*.95-m,tw+2*m,fs*1.25+2*m);ctx.globalAlpha=1;ctx.strokeStyle=C;ctx.lineWidth=1.5*d;ctx.strokeRect(-m,-fs*.95-m,tw+2*m,fs*1.25+2*m);
+   if(fs>=3){ctx.fillStyle=col(p.c);ctx.fillText(p.s,0,0)}ctx.restore();continue}
+  ctx.strokeStyle=C;ctx.lineWidth=Math.max(2.5*d,(.8+Math.min(p.w,5)*.35)*d+1.5*d);ctx.beginPath();
+  if(p.k==='E'){const e=p.e;ctx.ellipse(X(e[3]+ox),Y(e[4]+oy),Math.max(e[0]*s,.5),Math.max(e[1]*s,.5),-e[2],0,7)}
+  else{const a=p.p;ctx.moveTo(X(a[0]+ox),Y(a[1]+oy));for(let i=2;i<a.length;i+=2)ctx.lineTo(X(a[i]+ox),Y(a[i+1]+oy));if(p.k==='S')ctx.closePath()}
+  ctx.stroke()}
+ ctx.restore()}
+function drawBox(){if(!boxR)return;ctx.save();ctx.setLineDash([6*d,4*d]);ctx.lineWidth=1.5*d;ctx.strokeStyle='#00e5ff';ctx.fillStyle='rgba(0,229,255,.12)';const b=boxR;ctx.fillRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);ctx.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);ctx.restore()}
+function setSel(on){if(on&&msOn)setMs(false);selMode=on;$('sl').classList.toggle('on',on);$('sb').style.display=on?'flex':'none';mvMode=false;boxOn=false;mv.ph=0;mvOff=[0,0];mvDrag=false;boxR=null;if(!on)SEL.clear();
+ if(on){setPin(null);st('Chế độ chọn: chạm vào đối tượng để tích chọn (chạm lại để bỏ chọn)')}else st('Đã thoát chế độ chọn');refreshSB();draw()}
+$('sl').onclick=()=>{if(!M){st('Hãy mở bản đồ trước');return}setSel(!selMode)};$('sx').onclick=()=>setSel(false);
+$('sclr').onclick=()=>{SEL.clear();mv.ph=0;mvOff=[0,0];refreshSB();draw()};
+$('sbx').onclick=()=>{setMode(false,!boxOn);st(boxOn?'Kéo trên bản đồ để vẽ khung chọn':'Đã tắt chọn khung')};
+$('smv').onclick=()=>{if(!SEL.size)return;setMode(!mvMode,false);st(mvMode?'Kéo đối tượng đã chọn để dời, hoặc chạm điểm gốc rồi chạm điểm đích (bật 🧲 để bắt đúng đầu đoạn)':'Đã tắt chế độ di chuyển')};
+$('sdel').onclick=()=>{const n=SEL.size;if(!n)return;if(n>50&&!confirm('Xóa '+n+' đối tượng đã chọn?'))return;const ids=[...SEL].map(p=>p.id).sort((a,b)=>a-b);commit({t:'d',ids});SEL.clear();refreshSB();draw();st(`Đã xóa ${n} đối tượng (↶ để hoàn tác)`)};
+$('sun').onclick=undo;$('sre').onclick=redo;
+function openEd(){const p=[...SEL].find(q=>q.k==='T');if(!p||SEL.size!==1)return;$('edt').value=p.s;$('edh').value=+(p.h/1000).toFixed(4);$('edm').textContent='';$('ed').dataset.id=p.id;$('ed').style.display='flex';setTimeout(()=>{$('edt').focus();$('edt').select()},50)}
+$('sed').onclick=openEd;$('edx').onclick=()=>{$('ed').style.display='none'};
+$('edok').onclick=()=>{const p=M.byId.get(+$('ed').dataset.id),s1=$('edt').value,h1=Math.round(parseFloat($('edh').value)*1000*1e3)/1e3;
+ if(!p)return;if(!s1.trim()){$('edm').textContent='Nội dung chữ không được để trống (muốn bỏ chữ hãy dùng Xóa).';return}
+ if(!(h1>0&&h1<1e6)){$('edm').textContent='Chiều cao chữ không hợp lệ.';return}
+ $('ed').style.display='none';if(s1===p.s&&h1===p.h)return;commit({t:'t',id:p.id,s0:p.s,s1,h0:p.h,h1});refreshSB();st(`Đã sửa chữ: “${s1}”`)};
+$('edt').onkeydown=$('edh').onkeydown=e=>{if(e.key==='Enter')$('edok').click();else if(e.key==='Escape')$('edx').click()};
+addEventListener('keydown',e=>{if(!selMode||e.target.tagName==='INPUT')return;
+ if(e.key==='Delete'||e.key==='Backspace')$('sdel').click();else if(e.key==='Escape'){if(mvMode||boxOn)setMode(false,false);else $('sclr').click()}
+ else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo()}});
+/*EDIT-END*/
+/*MEASURE-BEGIN*/
+// Đo: chạm lần lượt các điểm (bật 🧲 để bắt đúng đầu đoạn thẳng). Tính trên mặt phẳng chiếu VN-2000 (1000 đơn vị bản vẽ = 1 m), như số liệu địa chính.
+let msOn=false,msMode='d',msHover=null,msAuto=true,msSnapChanged=false;const MP=[];
+const fmtL=v=>v>=1000?(v/1000).toFixed(3)+' km':v.toFixed(2)+' m';
+const fmtA=a=>a.toFixed(1)+' m²'+(a>=1e4?` (${(a/1e4).toFixed(4)} ha)`:'');
+function segX(a,b,c,e){const o=(p,q,r)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x);const d1=o(a,b,c),d2=o(a,b,e),d3=o(c,e,a),d4=o(c,e,b);return((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0))}
+function selfX(P){const n=P.length;if(n<4||n>400)return false;const R=P.map(p=>({x:p.x-P[0].x,y:p.y-P[0].y}));
+ for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){if(j===i+1||(i===0&&j===n-1))continue;if(segX(R[i],R[(i+1)%n],R[j],R[(j+1)%n]))return true}return false}
+function msCalc(){const P=MP,n=P.length,seg=[];let len=0;
+ for(let i=1;i<n;i++){const l=Math.hypot(P[i].x-P[i-1].x,P[i].y-P[i-1].y)/1000;seg.push(l);len+=l}
+ let area=0,per=len,bad=false;
+ if(n>=3){const x0=P[0].x,y0=P[0].y;let s=0;for(let i=0;i<n;i++){const a=P[i],b=P[(i+1)%n];s+=(a.x-x0)*(b.y-y0)-(b.x-x0)*(a.y-y0)}
+  area=Math.abs(s)/2/1e6;per=len+Math.hypot(P[n-1].x-P[0].x,P[n-1].y-P[0].y)/1000;bad=selfX(P)}
+ return{n,seg,len,area,per,bad}}
+function msText(){const c=msCalc(),n=c.n;if(!n)return{h:'Chạm vào bản đồ để đặt điểm đầu tiên'+(msAuto?' — tự bắt vào đầu đoạn thẳng gần nhất':' (đang TẮT 🧲 Bắt điểm ở thanh trên: điểm lấy đúng chỗ chạm, kém chính xác)'),p:''};
+ const free=MP.filter(p=>!p.sn&&!p.gps).length,edge=MP.filter(p=>p.sn===2).length,gps=MP.filter(p=>p.gps).length;
+ const note=(edge?` · ${edge} điểm trên cạnh`:'')+(free?` · ${free} điểm tự do`:'')+(gps?` · ${gps} điểm GPS (sai số vài m)`:'');
+ if(msMode==='d')return{h:n<2?'Đã có 1 điểm — chạm thêm điểm thứ hai':`Khoảng cách: <b>${fmtL(c.len)}</b>`,p:n<2?'':`Khoảng cách: ${fmtL(c.len)}`,
+  s:n>=2?` · ${n} điểm · đoạn cuối ${fmtL(c.seg[c.seg.length-1])}`+note:''};
+ if(n<3)return{h:`Đã có ${n} điểm — cần ít nhất 3 điểm để tính diện tích`+(n===2?` (đang dài ${fmtL(c.len)})`:''),p:''};
+ return{h:`Diện tích: <b>${fmtA(c.area)}</b> · Chu vi: ${fmtL(c.per)}`,p:`Diện tích: ${fmtA(c.area)}; chu vi: ${fmtL(c.per)}`,s:` · ${n} điểm`+note,w:c.bad?'⚠ Các cạnh tự cắt nhau — diện tích không đáng tin, hãy kiểm tra thứ tự điểm':''}}
+function msUI(){const t=msText();$('rt').innerHTML=t.h+(t.s?`<span style="opacity:.75">${t.s}</span>`:'')+(t.w?`<br><span class="w">${t.w}</span>`:'');$('rt').dataset.copy=t.p||'';
+ $('rd').classList.toggle('on',msMode==='d');$('ra').classList.toggle('on',msMode==='a');$('ru').disabled=!MP.length;$('rc').disabled=!MP.length;$('rp').disabled=!t.p;}
+// Chạm để đặt điểm. Tự bắt BẬT: điểm luôn rơi đúng tọa độ gốc của đầu đoạn (hoặc trên cạnh); không bắt được thì KHÔNG đặt điểm nào (tránh điểm lệch).
+function msTap(px,py){const wx=(px-cv.width/2)/V.s+V.cx,wy=V.cy+(cv.height/2-py)/V.s;let p,h=null;
+ const rm=SNAP_PX*1.15*d/V.s/1000,rtxt=rm<1?rm.toFixed(2):rm.toFixed(1);
+ if(msAuto){h=snapPick(wx,wy,1.15);snapPrev=null;
+  if(!h){st(`Không bắt được đầu đoạn nào trong vòng ~${rtxt} m quanh chỗ chạm — chạm gần đỉnh hơn hoặc phóng to (lần chạm này chưa tạo điểm)`);draw();return}
+  p={x:h.x,y:h.y,sn:h.k}}
+ else p={x:wx,y:wy,sn:0};
+ MP.push(p);msUI();draw();
+ st(`Điểm ${MP.length} · ${p.sn===1?`bắt đúng đầu đoạn (lớp ${h.lv})`:p.sn===2?`bắt TRÊN CẠNH, không phải đỉnh (lớp ${h.lv})`:'điểm tự do'} · X=${((p.y-M.org[1])/1000).toFixed(3)} Y=${((p.x-M.org[0])/1000).toFixed(3)}`+(msAuto&&rm>4?` · ⚠ đang xem xa (tầm bắt ~${rtxt} m), hãy phóng to để chắc đúng đỉnh`:''))}
+function drawMeasure(X,Y,s){if(!msOn||!MP.length)return;const P=MP,n=P.length,area=msMode==='a'&&n>=3;ctx.save();ctx.lineJoin='round';ctx.setLineDash([]);
+ ctx.beginPath();ctx.moveTo(X(P[0].x),Y(P[0].y));for(let i=1;i<n;i++)ctx.lineTo(X(P[i].x),Y(P[i].y));if(area)ctx.closePath();
+ if(area){ctx.fillStyle='rgba(255,214,0,.2)';ctx.fill()}
+ ctx.lineWidth=4.5*d;ctx.strokeStyle='#000';ctx.stroke();ctx.lineWidth=2.2*d;ctx.strokeStyle='#ffd600';ctx.stroke();
+ ctx.font=`bold ${12*d}px system-ui,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+ const ns=n-1+(area?1:0);for(let i=0;i<ns;i++){const a=P[i],b=P[(i+1)%n],ax=X(a.x),ay=Y(a.y),bx=X(b.x),by=Y(b.y);if(Math.hypot(bx-ax,by-ay)<50*d)continue;
+  const t=fmtL(Math.hypot(b.x-a.x,b.y-a.y)/1000),mx=(ax+bx)/2,my=(ay+by)/2;ctx.lineWidth=3.5*d;ctx.strokeStyle='#000';ctx.strokeText(t,mx,my);ctx.fillStyle='#fff';ctx.fillText(t,mx,my)}
+ if(msHover){ctx.setLineDash([6*d,4*d]);ctx.lineWidth=1.5*d;ctx.strokeStyle='#ffd600';ctx.beginPath();ctx.moveTo(X(P[n-1].x),Y(P[n-1].y));ctx.lineTo(X(msHover.x),Y(msHover.y));ctx.stroke();ctx.setLineDash([])}
+ P.forEach((p,i)=>{const px=X(p.x),py=Y(p.y),r=(i===n-1?6.5:5)*d;ctx.beginPath();if(p.sn===1)ctx.rect(px-r,py-r,2*r,2*r);else if(p.sn===2){ctx.moveTo(px,py-r*1.3);ctx.lineTo(px+r*1.3,py);ctx.lineTo(px,py+r*1.3);ctx.lineTo(px-r*1.3,py);ctx.closePath()}else ctx.arc(px,py,r,0,7);ctx.fillStyle=p.sn===1?'#00e676':p.sn===2?'#ff9100':p.gps?'#1e78ff':'#fff';ctx.fill();ctx.lineWidth=2*d;ctx.strokeStyle='#000';ctx.stroke()});
+ ctx.restore()}
+function setMs(on){msOn=on;$('rl').classList.toggle('on',on);$('rb').style.display=on?'block':'none';msHover=null;
+ if(on){if(selMode)setSel(false);setPin(null);msSnapChanged=false;if(!snapOn){setSnap(true);msSnapChanged=true}msUI();st('Chế độ đo: TỰ BẮT ĐIỂM đang bật — chạm gần đầu đoạn thẳng, điểm sẽ dính đúng tọa độ gốc. Số liệu tính trên mặt phẳng chiếu VN-2000.')}
+ else{MP.length=0;snapPrev=null;if(msSnapChanged&&snapOn)setSnap(false);msSnapChanged=false;st('Đã thoát chế độ đo')}draw()}
+$('rl').onclick=()=>{if(!M){st('Hãy mở bản đồ trước');return}setMs(!msOn)};$('rx').onclick=()=>setMs(false);
+$('rd').onclick=()=>{msMode='d';msUI();draw()};$('ra').onclick=()=>{msMode='a';msUI();draw()};
+$('ru').onclick=()=>{MP.pop();msUI();draw()};$('rc').onclick=()=>{MP.length=0;msUI();draw()};
+$('rg').onclick=()=>{if(gw==null){gpsOn();st('Đang bật định vị … khi có tín hiệu hãy bấm “Điểm tại vị trí tôi” lần nữa');return}
+ if(!gp){st('Chưa có tín hiệu GPS, hãy đợi thêm');return}MP.push({x:gp.x,y:gp.y,sn:0,gps:1});msUI();draw();st(`Đã thêm vị trí của bạn làm điểm đo (sai số ±${gp.acc<10?gp.acc.toFixed(1):Math.round(gp.acc)} m)`+(gp.acc>10?' — độ chính xác thấp, chỉ nên dùng để ước lượng':''))};
+$('rp').onclick=()=>{const t=$('rt').dataset.copy;if(!t)return;try{navigator.clipboard.writeText(t);st('Đã sao chép: '+t)}catch(e){st('Không sao chép được — '+t)}};
+addEventListener('keydown',e=>{if(!msOn||e.target.tagName==='INPUT')return;if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();$('ru').click()}else if(e.key==='Escape')setMs(false)});
+/*MEASURE-END*/
+function tapAt(px,py){let p={x:(px-cv.width/2)/V.s+V.cx,y:V.cy+(cv.height/2-py)/V.s};
+ if(snapOn&&alMode!==2){const h=snapFind(p.x,p.y,SNAP_PX*d/V.s);
+  if(!h){st('Không có đầu đoạn thẳng nào trong vòng chạm — phóng to hoặc chạm gần điểm hơn');return}
+  p={x:h.x,y:h.y,sn:1,lv:h.lv}}
+ if(!alMode){setPin(p);if(p.sn)st(`Đã bắt điểm (lớp ${p.lv}): X=${((p.y-M.org[1])/1000).toFixed(3)}  Y=${((p.x-M.org[0])/1000).toFixed(3)}`);return}
+ if(alMode===1){alPin=p;pin=p;alMode=2;draw();st('Bước 2: chạm đúng điểm đó trên ẢNH VỆ TINH (phóng to để chính xác)');return}
+ const l=scrLL(px,py);CAL.pts.push({x:alPin.x,y:alPin.y,la:l[0],lo:l[1]});AU=[0,0];fitCal();saveCal();calUI();const n=CAL.pts.length;setPin(alPin);alPin=null;alMode=1;
+ st(`Đã thêm điểm chuẩn ${n}`+(n>1?` · sai số dư RMS ${CAL.rms.toFixed(2)} m`:' (cần ≥3 điểm, rải đều)')+' — chạm điểm tiếp theo trên bản vẽ')}
+function ggLoad(cb){let k=null;try{k=localStorage.getItem('gmkey')}catch(e){}k=k||prompt('Dán khóa API Google Maps (đã bật Maps JavaScript API):');if(!k)return;try{localStorage.setItem('gmkey',k)}catch(e){}
+ if(window.google&&google.maps){cb();return}window.__gmReady=cb;const s=document.createElement('script');s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(k)+'&v=weekly&callback=__gmReady';s.onerror=()=>st('Không tải được Google Maps: kiểm tra mạng và khóa API');document.head.appendChild(s)}
+window.gm_authFailure=()=>{st('Google từ chối khóa API (kiểm tra khóa, đã bật Maps JavaScript API và thanh toán).');try{localStorage.removeItem('gmkey')}catch(e){}};
+function buildParcels(){const L=M.prims.filter(p=>p.k==='T'&&(p.lv===13||p.lv===19||p.lv===3)&&p.h<2600&&p.s.length<=12&&!/Tờ|Tổng|Thành/.test(p.s)),par=L.map((_,i)=>i),fd=i=>par[i]===i?i:par[i]=fd(par[i]),RR=6000,cell=new Map(),gt=k=>{let v=cell.get(k);if(!v){v=[];cell.set(k,v)}return v};
+ L.forEach((p,i)=>gt(Math.floor(p.x/RR)+','+Math.floor(p.y/RR)).push(i));
+ L.forEach((p,i)=>{const cx=Math.floor(p.x/RR),cy=Math.floor(p.y/RR);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++)for(const j of cell.get((cx+a)+','+(cy+b))||[])if(j>i&&Math.hypot(L[j].x-p.x,L[j].y-p.y)<RR)par[fd(j)]=fd(i)});
+ const g=new Map();L.forEach((p,i)=>{const k=fd(i);if(!g.has(k))g.set(k,[]);g.get(k).push(p)});
+ PL=[...g.values()].map(a=>{a.sort((p,q)=>q.y-p.y||p.x-q.x);return{n:a.map(p=>p.s).join(' | '),x:a.reduce((s,p)=>s+p.x,0)/a.length,y:a.reduce((s,p)=>s+p.y,0)/a.length}})}
+const nearP=p=>{let b=null,bd=25000;for(const c of PL){const q=Math.hypot(c.x-p.x,c.y-p.y);if(q<bd){bd=q;b=c}}return b?b.n:''};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const idb=()=>new Promise((ok,no)=>{const r=indexedDB.open('mapdgn',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+const dbx=async(m,fn)=>{const db=await idb();return new Promise((ok,no)=>{const t=db.transaction('f',m),q=fn(t.objectStore('f'));t.oncomplete=()=>ok(q&&q.result);t.onerror=()=>no(t.error)})};
+const dbPut=(k,v)=>dbx('readwrite',s=>s.put(v,k)),dbGet=k=>dbx('readonly',s=>s.get(k)),dbDel=k=>dbx('readwrite',s=>s.delete(k)),dbKeys=()=>dbx('readonly',s=>s.getAllKeys());
+const LIC_PUB={"kty":"EC","crv":"P-256","x":"WARx_rcX7ky4qi-xyqWQvvs65g_lgR288CwmztzZeh8","y":"pSDVWBtZKJSCHjUtDpKekNZ0GfRfV6viFk4oB-WZgIk"},REVOKED=[],TRIAL=1000000;
+let licOK=false,licId='';
+const b64u=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
+const lcExtract=t=>{const m=(t||'').replace(/\s+/g,'').match(/MAPDGN-[A-Za-z0-9_-]+\.[A-Za-z0-9_-]{86}/);return m?m[0]:''};
+async function verifyCode(code){try{if(!code)return null;const[p,s]=code.slice(7).split('.');const id=new TextDecoder().decode(b64u(p));if(REVOKED.includes(id))return null;
+ const key=await crypto.subtle.importKey('jwk',LIC_PUB,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
+ return await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,b64u(s),new TextEncoder().encode('MAPDGN|'+id))?id:null}catch(e){return null}}
+function updLic(){const g=$('gd');if(g)g.textContent=licOK?'Chỉ đường':'🔒 Chỉ đường';$('lcb').style.display=licOK?'none':'block';$('lk').textContent=licOK?'🔑 Đã kích hoạt ('+licId+')':'🔑 Kích hoạt'}
+function openLic(msg){$('lct').textContent=licOK?'Đã kích hoạt bản quyền, mã '+licId+'. Cảm ơn bạn đã ủng hộ.':'Bản dùng thử chỉ mở được file bản đồ dưới 1 MB. Nhập mã kích hoạt để mở file lớn và dùng chức năng Chỉ đường theo Google Map.';$('lcm').textContent=msg||'';$('lcc').style.display=licOK?'none':'block';$('lc').style.display='flex'}
+async function checkLic(){let c='';try{const m=lcExtract(decodeURIComponent(location.hash));if(m){localStorage.setItem('mapdgn_lic',m);history.replaceState(null,'',location.pathname+location.search)}c=localStorage.getItem('mapdgn_lic')||''}catch(e){}
+ if(c&&window.crypto&&crypto.subtle){const id=await verifyCode(c);if(id){licOK=true;licId=id}else{try{localStorage.removeItem('mapdgn_lic')}catch(e){}}}updLic()}
+let licReady=checkLic();
+$('gd').addEventListener('click',e=>{if(!licOK){e.preventDefault();e.stopImmediatePropagation();openLic('Chức năng Chỉ đường theo Google Map chỉ có ở bản đã kích hoạt. Liên hệ Nguyễn Xuân Thủy – ĐT 0972839747 để lấy mã kích hoạt đầy đủ tính năng.')}},true);
+$('lcb').onclick=()=>openLic();$('lk').onclick=()=>openLic();$('lcx').onclick=()=>{$('lc').style.display='none'};
+$('lcgo').onclick=async()=>{if(!(window.crypto&&crypto.subtle)){$('lcm').textContent='Cần mở ứng dụng bằng địa chỉ https:// để kích hoạt.';return}
+ const c=lcExtract($('lcin').value);if(!c){$('lcm').textContent='Chưa thấy mã hợp lệ (bắt đầu bằng MAPDGN-).';return}
+ const id=await verifyCode(c);if(!id){$('lcm').textContent='Mã không đúng hoặc đã bị thu hồi.';return}
+ try{localStorage.setItem('mapdgn_lic',c)}catch(e){}licOK=true;licId=id;updLic();$('lcin').value='';openLic();st('Đã kích hoạt, mã '+id)};
+function size(){const r=$('w').getBoundingClientRect();d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;draw()}
+function bbox(p){if(p.k==='T')return[p.x,p.y,p.x+p.w,p.y+p.h];if(p.k==='E'){const e=p.e,r=Math.max(e[0],e[1]);return[e[3]-r,e[4]-r,e[3]+r,e[4]+r]}
+ let a=1/0,b=1/0,c=-1/0,e=-1/0;for(let i=0;i<p.p.length;i+=2){const x=p.p[i],y=p.p[i+1];if(x<a)a=x;if(x>c)c=x;if(y<b)b=y;if(y>e)e=y}return[a,b,c,e]}
+function fit(){let a=1/0,b=1/0,c=-1/0,e=-1/0;for(const p of M.prims)if(p.k!=='T'&&vis.has(p.lv)){const q=p.b;a=Math.min(a,q[0]);b=Math.min(b,q[1]);c=Math.max(c,q[2]);e=Math.max(e,q[3])}
+ if(a===1/0)return;V.cx=(a+c)/2;V.cy=(b+e)/2;V.s=Math.min(cv.width/(c-a||1),cv.height/(e-b||1))*.95;draw()}
+function draw(){raf=0;const W=cv.width,H=cv.height;ctx.fillStyle='#000';ggOn?ctx.clearRect(0,0,W,H):ctx.fillRect(0,0,W,H);if(!M)return;
+ const{cx,cy,s}=V,X=x=>(x-cx)*s+W/2,Y=y=>H/2-(y-cy)*s,x0=cx-W/2/s,x1=cx+W/2/s,y0=cy-H/2/s,y1=cy+H/2/s;
+ if(ggOn&&gm){const c=toLL(V.cx,V.cy),z=Math.max(1,Math.min(21,Math.log2(156543.03*Math.cos(c[0]*RAD)*V.s/d*1000)));gm.__w=z;gm.moveCamera({center:{lat:c[0],lng:c[1]},zoom:z})}else if(satOn)tiles(X,Y,x0,x1,y0,y1);
+ ctx.lineJoin='round';let ld='';
+ for(const p of M.prims){if(!vis.has(p.lv)||(SEL.size&&SEL.has(p)))continue;const q=p.b;if(q[2]<x0||q[0]>x1||q[3]<y0||q[1]>y1)continue;
+  if(p.k==='T'){const fs=p.h*s*1.25;if(fs<5)continue;ctx.save();ctx.translate(X(p.x),Y(p.y));ctx.rotate(-p.r);ctx.fillStyle=col(p.c);ctx.font=fs+'px Arial,sans-serif';ctx.fillText(p.s,0,0);ctx.restore();continue}
+  ctx.strokeStyle=col(p.c);ctx.lineWidth=(.8+Math.min(p.w,5)*.35)*d;const dk=p.st>0&&p.st<8?p.st:0;if(dk+''!==ld){ctx.setLineDash(DASH[dk].map(v=>v*d));ld=dk+''}
+  ctx.beginPath();
+  if(p.k==='E'){const e=p.e;ctx.ellipse(X(e[3]),Y(e[4]),Math.max(e[0]*s,.5),Math.max(e[1]*s,.5),-e[2],0,7)}
+  else{const a=p.p;ctx.moveTo(X(a[0]),Y(a[1]));for(let i=2;i<a.length;i+=2)ctx.lineTo(X(a[i]),Y(a[i+1]));if(p.k==='S')ctx.closePath()}
+  ctx.stroke()}
+ drawSel(X,Y,s);drawMeasure(X,Y,s);ctx.setLineDash([]);drawSatInfo(W,H);
+ drawGps(X,Y,W,H);
+ if(pin){const px=X(pin.x),py=Y(pin.y),r=11*d;ctx.fillStyle='#e53935';ctx.strokeStyle='#fff';ctx.lineWidth=2*d;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-r*.8,py-r*2);ctx.arc(px,py-r*2.4,r,Math.PI*.8,Math.PI*.2);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px,py-r*2.4,r*.4,0,7);ctx.fill()}
+ if(snapOn||(msOn&&msAuto)){if(snapPrev)snapMark(snapPrev.x,snapPrev.y,snapPrev.k===2?'#ff9100':'#ffd600',true);if(pin&&pin.sn)snapMark(pin.x,pin.y,'#00e676',false)}
+ if(selMode&&mv.ph===1&&mv.b)snapMark(mv.b.x,mv.b.y,'#00e676',false);drawBox();
+ if(mark){ctx.strokeStyle='#ff3b30';ctx.lineWidth=3*d;ctx.beginPath();ctx.arc(X(mark.x),Y(mark.y),20*d,0,7);ctx.stroke()}}
+const redraw=()=>{if(!raf)raf=requestAnimationFrame(draw)};
+function zoomAt(px,py,f){const{s,cx,cy}=V,H=cv.height,W=cv.width,wx=(px-W/2)/s+cx,wy=cy+(H/2-py)/s;V.s=s*f;V.cx=wx-(px-W/2)/V.s;V.cy=wy-(H/2-py)/V.s;redraw()}
+function useModel(id){M=R.models[id];MID=id;if(msOn){MP.length=0;msUI()}gpsReset();initEdits();loadCal();buildParcels();pal=R.pal;const lc={},cc={};
+ for(const p of M.prims){p.b=bbox(p);lc[p.lv]=(lc[p.lv]||0)+1;(cc[p.lv]??={})[p.c]=(cc[p.lv][p.c]||0)+1}
+ vis=new Set(Object.keys(lc).map(Number));mark=null;$('hint').style.display='none';SN=null;snapPrev=null;if(snapOn)SN=buildSnap(M.prims);
+ $('lv').innerHTML='<div style="display:flex;gap:6px;margin-bottom:6px"><button id="la">Tất cả</button><button id="ln">Bỏ hết</button></div>'+Object.keys(lc).map(Number).sort((a,b)=>a-b).map(l=>{
+  const top=Object.entries(cc[l]).sort((a,b)=>b[1]-a[1])[0][0];return`<label><input type="checkbox" data-l="${l}" checked><i style="background:${col(+top)}"></i>Lớp ${l} <small>(${lc[l]})</small></label>`}).join('');
+ $('la').onclick=()=>tog(true);$('ln').onclick=()=>tog(false);
+ $('lv').onchange=e=>{const l=+e.target.dataset.l;e.target.checked?vis.add(l):vis.delete(l);draw()};
+ const un=Object.entries(M.un).map(([t,n])=>`loại ${t}×${n}`).join(', ');
+ st(`${M.prims.length} đối tượng · ${Object.keys(lc).length} lớp`+(un?` · chưa vẽ: ${un}`:''));fit();checkGeo()}
+function tog(on){vis=new Set(on?Object.keys(M.prims.reduce((o,p)=>(o[p.lv]=1,o),{})).map(Number):[]);document.querySelectorAll('#lv input').forEach(i=>i.checked=on);draw()}
+async function load(file){await licReady;if(!licOK&&file.size>=TRIAL){st('Bản dùng thử chỉ mở file dưới 1 MB. Cần kích hoạt để mở file này.');openLic('File '+(file.size/1e6).toFixed(1)+' MB vượt giới hạn dùng thử.');return}await loadBuf(file.name,new Uint8Array(await file.arrayBuffer()),true)}
+async function loadBuf(name,u8,save){await licReady;if(!licOK&&u8.length>=TRIAL){st('Bản dùng thử chỉ mở file dưới 1 MB. Cần kích hoạt để mở file này.');openLic('File '+(u8.length/1e6).toFixed(1)+' MB vượt giới hạn dùng thử.');return}fname=name;st('Đang đọc '+name+' …');await new Promise(r=>setTimeout(r,30));
+ try{R=await parseDGN(u8)}catch(e){st('Lỗi: '+e.message);return}
+ const ids=Object.keys(R.models).sort((a,b)=>R.models[b].prims.length-R.models[a].prims.length);
+ if(!ids.length){st('Không tìm thấy dữ liệu đồ họa trong file');return}
+ const s=$('md');s.innerHTML=ids.map(i=>`<option value="${i}">Model ${i} (${R.models[i].prims.length})</option>`).join('');s.hidden=ids.length<2;s.onchange=()=>useModel(s.value);useModel(ids[0]);if(save){dbPut(name,u8.slice()).catch(()=>{});try{localStorage.setItem('last',name)}catch(e){}}}
+$('f').onchange=e=>e.target.files[0]&&load(e.target.files[0]);
+document.body.ondragover=e=>e.preventDefault();document.body.ondrop=e=>{e.preventDefault();e.dataTransfer.files[0]&&load(e.dataTransfer.files[0])};
+$('fit').onclick=()=>M&&fit();$('lb').onclick=()=>{const l=$('lv');l.style.display=l.style.display==='block'?'none':'block'};
+$('q').onkeydown=e=>{if(e.key!=='Enter'||!M)return;const k=e.target.value.trim().toLowerCase();if(!k)return;
+ if(e.target.dataset.k!==k){e.target.dataset.k=k;hits=M.prims.filter(p=>p.k==='T'&&p.s.toLowerCase().includes(k));hi=0}else hi=(hi+1)%(hits.length||1);
+ if(!hits.length){mark=null;st('Không tìm thấy “'+k+'”');draw();return}
+ const p=hits[hi];mark=p;vis.add(p.lv);const cb=document.querySelector(`#lv input[data-l="${p.lv}"]`);if(cb)cb.checked=true;
+ V.cx=p.x+p.w/2;V.cy=p.y;V.s=Math.max(V.s,60*d/(p.h*1.25));setPin({x:p.x+p.w/2,y:p.y+p.h/2});st(`Kết quả ${hi+1}/${hits.length}: “${p.s}” — Enter để xem kết quả tiếp`);draw()};
+// pan / zoom / pinch
+const P=new Map();let pd=0;
+let dn=null;cv.onpointerdown=e=>{dn=[e.clientX,e.clientY,Date.now(),P.size];cv.setPointerCapture(e.pointerId);P.set(e.pointerId,[e.clientX,e.clientY]);pd=0;
+ mvGrab=false;if(selMode&&mvMode&&M&&SEL.size&&!dn[3]){const r=cv.getBoundingClientRect(),h=hitTest(((e.clientX-r.left)*d-cv.width/2)/V.s+V.cx,V.cy+(cv.height/2-(e.clientY-r.top)*d)/V.s,SELPX*d/V.s);mvGrab=!!h&&SEL.has(h)}
+ if(msOn&&msAuto&&M&&!dn[3]){const r=cv.getBoundingClientRect();snapPrev=snapPick(((e.clientX-r.left)*d-cv.width/2)/V.s+V.cx,V.cy+(cv.height/2-(e.clientY-r.top)*d)/V.s,1.15);redraw()}};
+cv.onpointerup=cv.onpointercancel=e=>{const r=cv.getBoundingClientRect(),px=(e.clientX-r.left)*d,py=(e.clientY-r.top)*d,first=dn&&!dn[3],tap=first&&Math.hypot(e.clientX-dn[0],e.clientY-dn[1])<6&&Date.now()-dn[2]<600;
+ if(e.type==='pointerup'&&M&&first&&selMode){
+  if(boxR){const b=boxR;boxR=null;selBox(b)}
+  else if(mvDrag){const o=mvOff;mvDrag=false;mvOff=[0,0];if(o[0]||o[1])commitMove(o[0],o[1]);else draw()}
+  else if(tap)selTap(px,py)}
+ else if(e.type==='pointerup'&&msOn&&M&&tap)msTap(px,py);
+ else if(e.type==='pointerup'&&!selMode&&!msOn&&(pinMode||alMode||snapOn)&&M&&tap)tapAt(px,py);
+ if(e.type==='pointercancel'){boxR=null;if(mvDrag){mvDrag=false;mvOff=[0,0];draw()}}
+ mvGrab=false;P.delete(e.pointerId);pd=0};
+cv.onpointermove=e=>{const r=cv.getBoundingClientRect(),px=(e.clientX-r.left)*d,py=(e.clientY-r.top)*d;
+ if(msOn&&msAuto&&M&&e.pointerType==='mouse'&&!P.size){const h=snapPick((px-cv.width/2)/V.s+V.cx,V.cy+(cv.height/2-py)/V.s,1.15);if((h?h.x+','+h.y:'')!==(snapPrev?snapPrev.x+','+snapPrev.y:'')){snapPrev=h;redraw()}
+  if(MP.length){msHover=h||null;redraw()}}
+ else{
+ if(snapOn&&SN&&M&&e.pointerType==='mouse'&&!P.size&&alMode!==2){const h=snapFind((px-cv.width/2)/V.s+V.cx,V.cy+(cv.height/2-py)/V.s,SNAP_PX*d/V.s);if((h?h.i:-1)!==(snapPrev?snapPrev.i:-1)){snapPrev=h;redraw()}}
+ if(msOn&&MP.length&&!P.size&&e.pointerType==='mouse'){msHover=snapOn&&snapPrev?snapPrev:{x:(px-cv.width/2)/V.s+V.cx,y:V.cy+(cv.height/2-py)/V.s};redraw()}}
+ if(selMode&&mvMode&&mv.ph===1&&!P.size&&e.pointerType==='mouse'){const w={x:(px-cv.width/2)/V.s+V.cx,y:V.cy+(cv.height/2-py)/V.s},t=snapOn&&snapPrev?snapPrev:snapOn?null:w;if(t){mvOff=[t.x-mv.b.x,t.y-mv.b.y];redraw()}}
+ if(M){const x=(px-cv.width/2)/V.s+V.cx,y=V.cy+(cv.height/2-py)/V.s,o=M.org;
+  if(!P.size)$('st').dataset.c=`X(Bắc)=${((y-o[1])/1000).toFixed(2)}  Y(Đông)=${((x-o[0])/1000).toFixed(2)}`,$('st').textContent=$('st').dataset.c}
+ if(!P.has(e.pointerId))return;const o=P.get(e.pointerId);
+ if(P.size===1){
+  if(selMode&&boxOn&&dn){boxR=[(dn[0]-r.left)*d,(dn[1]-r.top)*d,px,py];redraw();return}
+  if(selMode&&mvMode&&mvGrab&&dn&&(mvDrag||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>8)){mvDrag=true;mv.ph=0;mvOff=[(e.clientX-dn[0])*d/V.s,-(e.clientY-dn[1])*d/V.s];redraw();return}
+  if(gfol)folOff();if(msOn&&snapPrev&&Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>6)snapPrev=null;V.cx-=(e.clientX-o[0])*d/V.s;V.cy+=(e.clientY-o[1])*d/V.s;P.set(e.pointerId,[e.clientX,e.clientY]);redraw()}
+ else if(P.size===2){boxR=null;if(mvDrag){mvDrag=false;mvOff=[0,0]}P.set(e.pointerId,[e.clientX,e.clientY]);const[a,b]=[...P.values()],n=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)zoomAt(((a[0]+b[0])/2-r.left)*d,((a[1]+b[1])/2-r.top)*d,n/pd);pd=n}};
+cv.onwheel=e=>{e.preventDefault();const r=cv.getBoundingClientRect();zoomAt((e.clientX-r.left)*d,(e.clientY-r.top)*d,Math.exp(-e.deltaY*.0015))};
+$('mz').onchange=()=>draw();
+$('lib').onclick=async()=>{const l=$('ll');if(l.style.display==='block'){l.style.display='none';return}
+ let ks=[];try{ks=await dbKeys()}catch(e){}
+ l.innerHTML='<b>Thư viện bản đồ (lưu trên máy này)</b>'+(ks.length?ks.map((k,i)=>`<div class="lr"><span>${esc(k)}</span><button data-o="${i}">Mở</button><button data-d="${i}">Xóa</button></div>`).join(''):'<p>Chưa có bản đồ nào. Bấm “Mở” để chọn file .dgn.</p>');
+ l.onclick=async e=>{const o=e.target.dataset.o,x=e.target.dataset.d;if(o!=null){l.style.display='none';try{localStorage.setItem('last',ks[o])}catch(z){}await loadBuf(ks[o],new Uint8Array(await dbGet(ks[o])),false)}else if(x!=null){await dbDel(ks[x]);try{if(localStorage.getItem('last')===ks[x])localStorage.removeItem('last')}catch(z){}$('lib').onclick();$('lib').onclick()}};l.style.display='block'};
+/*GPS-BEGIN*/
+// Vị trí hiện tại: luôn căn giữa ở lần định vị đầu; ngoài khung thì có mũi tên + khoảng cách; thử GPS rồi tự chuyển sang định vị bằng mạng/Wi-Fi (trong nhà).
+let gfol=false,gerr='',gw2=null,gwt=0;
+function mapBB(){if(!M)return null;if(!M.bb){let a=1/0,b=1/0,c=-1/0,e=-1/0;for(const p of M.prims){if(p.k==='T')continue;const q=p.b||bbox(p);a=Math.min(a,q[0]);b=Math.min(b,q[1]);c=Math.max(c,q[2]);e=Math.max(e,q[3])}M.bb=[a,b,c,e]}return M.bb}
+const bbDist=(x,y)=>{const q=mapBB();if(!q||q[0]===1/0)return 0;return Math.hypot(Math.max(q[0]-x,0,x-q[2]),Math.max(q[1]-y,0,y-q[3]))};
+const fmtD=m=>m>=1000?(m/1000).toFixed(1)+' km':Math.round(m)+' m';
+function folOff(){if(gfol){gfol=false;$('gf').classList.remove('on')}}
+function gpsUI(){const g=$('gi'),t=$('gt');g.style.display='block';
+ if(gerr){t.textContent=gerr;g.classList.add('w');return}
+ if(!gp){t.textContent='◎ Đang xác định vị trí … Nếu trình duyệt hỏi quyền vị trí, hãy chọn “Cho phép”. (ra chỗ thoáng sẽ nhanh hơn)';g.classList.remove('w');return}
+ const u=fromLL0(gp.la,gp.lo),np=nearP(gp),dm=bbDist(gp.x,gp.y)/1000,acc=gp.acc;g.classList.toggle('w',acc>25||dm>300);
+ t.innerHTML=`<b>◎ Vị trí của tôi</b> · sai số ±${acc<10?acc.toFixed(1):Math.round(acc)} m`+(acc>100?' <b>⚠ xấp xỉ (mạng/Wi-Fi) — ra ngoài trời để chính xác hơn</b>':acc>25?' <b>⚠ lớn</b>':'')+
+  `<br>Vĩ độ, kinh độ: ${gp.la.toFixed(6)}, ${gp.lo.toFixed(6)}<br>VN-2000: X=${((u[1]-M.org[1])/1000).toFixed(2)} Y=${((u[0]-M.org[0])/1000).toFixed(2)}`+
+  (np?`<br>Gần thửa: ${esc(np)}`:'')+(dm>300?`<br>⚠ Cách vùng bản đồ khoảng ${fmtD(dm)} — nếu bạn đang đứng trong vùng bản đồ thì Kinh tuyến trục/k0 đang sai (⚙ → 🩺 Chẩn đoán)`:'')}
+function gpsStop(){if(gw!=null){navigator.geolocation.clearWatch(gw);gw=null}if(gw2!=null){navigator.geolocation.clearWatch(gw2);gw2=null}clearTimeout(gwt);$('gps').classList.remove('on')}
+function gpsOff(){gpsStop();gp=null;gpf=0;gerr='';folOff();$('gi').style.display='none';draw()}
+function gpsReset(){if(gw!=null){gp=null;gpf=0;gpsUI()}}
+function gpsPos(p){const la=p.coords.latitude,lo=p.coords.longitude,acc=p.coords.accuracy,u=fromLL(la,lo);
+ if(!isFinite(u[0])||!isFinite(u[1])){gerr=`Không đổi được vị trí ${la.toFixed(5)}, ${lo.toFixed(5)} sang tọa độ bản vẽ — hãy kiểm tra Kinh tuyến trục (KTT) và k0 trong ⚙`;gpsUI();return}
+ if(gp&&Date.now()-gp.t<10000&&acc>gp.acc*3)return; // vừa có vị trí tốt hơn nhiều, bỏ qua vị trí xấp xỉ
+ gerr='';gp={x:u[0],y:u[1],acc,la,lo,t:Date.now()};
+ if(!gpf){gpf=1;V.cx=u[0];V.cy=u[1];V.s=Math.max(V.s,.0015*d);const dm=bbDist(u[0],u[1])/1000;if(dm>300)st(`⚠ Vị trí của bạn cách vùng bản đồ khoảng ${fmtD(dm)} — bấm ⤢ để quay lại bản đồ`)}
+ else if(gfol){V.cx=u[0];V.cy=u[1]}
+ gpsUI();draw()}
+function startLow(){if(gw2!=null||gw==null)return;gw2=navigator.geolocation.watchPosition(gpsPos,e=>gpsErr(e,false),{enableHighAccuracy:false,maximumAge:30000,timeout:30000})}
+function gpsErr(e,hi){
+ if(e.code===1){gerr='Chưa được cấp quyền vị trí. Hãy cho phép “Vị trí” cho trang này trong cài đặt trình duyệt (và bật Vị trí/GPS của điện thoại) rồi bấm ◎ Vị trí lại'+(window.isSecureContext?'.':' — định vị chỉ chạy khi mở bằng HTTPS.');gpsStop();gp=null}
+ else if(!gp){if(hi)startLow();gerr=(e.code===3||e.code===2)?'Chưa bắt được GPS (đang ở trong nhà?) — đang thử định vị bằng mạng/Wi-Fi … ra ngoài trời sẽ chính xác hơn':'Không lấy được vị trí: '+e.message}
+ gpsUI()}
+function gpsOn(){if(!M){st('Hãy mở bản đồ trước');return}
+ if(!navigator.geolocation){gerr='Thiết bị/trình duyệt không hỗ trợ định vị';gpsUI();return}
+ gerr='';gp=null;gpf=0;$('gps').classList.add('on');gpsUI();
+ gw=navigator.geolocation.watchPosition(gpsPos,e=>gpsErr(e,true),{enableHighAccuracy:true,maximumAge:2000,timeout:10000});
+ gwt=setTimeout(()=>{if(gw!=null&&!gp)startLow()},6000)}
+function drawGps(X,Y,W,H){if(!gp)return;const gx=X(gp.x),gy=Y(gp.y);
+ if(gx>=-10*d&&gx<=W+10*d&&gy>=-10*d&&gy<=H+10*d){ctx.save();ctx.fillStyle='rgba(30,120,255,.18)';ctx.strokeStyle='rgba(30,120,255,.6)';ctx.lineWidth=1.5*d;ctx.beginPath();ctx.arc(gx,gy,Math.max(14*d,gp.acc*1000*V.s),0,7);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#1e78ff';ctx.strokeStyle='#fff';ctx.lineWidth=3*d;ctx.beginPath();ctx.arc(gx,gy,8*d,0,7);ctx.fill();ctx.stroke();ctx.restore();return}
+ const cx=W/2,cy=H/2,dx=gx-cx,dy=gy-cy,m=30*d,k=Math.min((W/2-m)/Math.abs(dx||1e-9),(H/2-m)/Math.abs(dy||1e-9)),ax=cx+dx*k,ay=cy+dy*k,ang=Math.atan2(dy,dx),t='Tôi · '+fmtD(Math.hypot(gp.x-V.cx,gp.y-V.cy)/1000);
+ ctx.save();ctx.translate(ax,ay);ctx.rotate(ang);ctx.fillStyle='#1e78ff';ctx.strokeStyle='#fff';ctx.lineWidth=2.5*d;ctx.beginPath();ctx.moveTo(16*d,0);ctx.lineTo(-10*d,-12*d);ctx.lineTo(-4*d,0);ctx.lineTo(-10*d,12*d);ctx.closePath();ctx.stroke();ctx.fill();ctx.restore();
+ ctx.save();ctx.font=`bold ${12*d}px system-ui,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';const lx=Math.max(50*d,Math.min(W-50*d,ax-Math.cos(ang)*38*d)),ly=Math.max(14*d,Math.min(H-14*d,ay-Math.sin(ang)*38*d));
+ ctx.lineWidth=3.5*d;ctx.strokeStyle='#000';ctx.strokeText(t,lx,ly);ctx.fillStyle='#fff';ctx.fillText(t,lx,ly);ctx.restore()}
+$('gps').onclick=()=>{if(gw==null)gpsOn();else if(gp){V.cx=gp.x;V.cy=gp.y;V.s=Math.max(V.s,.0015*d);draw()}else gpsUI()};
+$('gc').onclick=()=>{if(gp){V.cx=gp.x;V.cy=gp.y;V.s=Math.max(V.s,.0015*d);draw()}};
+$('gh').onclick=()=>{if(M)fit()};
+$('gf').onclick=()=>{gfol=!gfol;$('gf').classList.toggle('on',gfol);if(gfol&&gp){V.cx=gp.x;V.cy=gp.y;draw()}};
+$('gpn').onclick=()=>{if(!gp)return;if(msOn||selMode){st('Hãy thoát chế độ Đo/Chọn để ghim vị trí');return}setPin({x:gp.x,y:gp.y})};
+$('gcp').onclick=()=>{if(!gp)return;try{navigator.clipboard.writeText(gp.la.toFixed(6)+', '+gp.lo.toFixed(6));st('Đã sao chép: '+gp.la.toFixed(6)+', '+gp.lo.toFixed(6))}catch(e){st('Không sao chép được — hãy chép tay: '+gp.la.toFixed(6)+', '+gp.lo.toFixed(6))}};
+$('gx').onclick=gpsOff;
+/*GPS-END*/
+/*DIAG-BEGIN*/
+const BUILD='2026-10-23-e';
+function inBox(){try{if(window!==window.top)return true}catch(e){return true}const u=navigator.userAgent;return(/iPhone|iPad|iPod/.test(u)&&!/Safari\//.test(u))||/; wv\)/.test(u)}
+$('fwx').onclick=()=>{$('fw').style.display='none'};if(inBox())$('fw').style.display='block';
+// Thanh trạng thái ảnh ngay trên bản đồ (luôn thấy được, không bị thông báo khác đè lên)
+function drawSatInfo(W,H){if(!satOn||ggOn)return;ctx.save();ctx.font=11*d+'px sans-serif';ctx.textBaseline='alphabetic';ctx.lineJoin='round';const nm=satNames();let t2;
+ if(!NT)t2='⚠ Không tính được ô ảnh — xem ⚙ → 🩺 Chẩn đoán';
+ else if(!NL&&TERR>0&&!TOK)t2='⚠ KHÔNG TẢI ĐƯỢC ẢNH — xem ⚙ → 🩺 Chẩn đoán';
+ else t2=`Ảnh ${nm[Math.min(SP,nm.length-1)]} · mức ${TZ} · ${NL}/${NT} ô`+(NL<NT?' · đang tải …':'');
+ const t1=(CUST&&SP===0)?'Ảnh: nguồn tùy chọn':'Ảnh: Esri World Imagery (ước lượng WGS84, lệch vài mét so với VN-2000)';
+ for(const[t,y]of[[t1,H-6*d],[t2,H-6*d-15*d]]){ctx.lineWidth=3*d;ctx.strokeStyle='rgba(0,0,0,.85)';ctx.strokeText(t,6*d,y);ctx.fillStyle=t.startsWith('⚠')?'#ffcc00':'#fff';ctx.fillText(t,6*d,y)}
+ ctx.restore()}
+// Tọa độ bản đồ đổi ra vĩ/kinh độ phải nằm trong Việt Nam, nếu không thì sẽ không có ảnh vệ tinh/vị trí đúng chỗ
+function checkGeo(){if(!M)return;const c=toLL(V.cx,V.cy);
+ if(!isFinite(c[0])||!isFinite(c[1])||c[0]<8||c[0]>24.5||c[1]<102||c[1]>110.5)
+  st(`⚠ Tọa độ bản đồ đổi ra vĩ độ ${isFinite(c[0])?c[0].toFixed(3):'?'}, kinh độ ${isFinite(c[1])?c[1].toFixed(3):'?'} — NGOÀI Việt Nam nên ảnh vệ tinh và vị trí sẽ không đúng chỗ. Mở ⚙ chỉnh Kinh tuyến trục (KTT) và k0 cho đúng tỉnh, hoặc bấm 🩺 Chẩn đoán`)}
+function probe(url,ms=8000){return new Promise(ok=>{const t0=performance.now();let fin=false,tm;const done=r=>{if(fin)return;fin=true;clearTimeout(tm);r.ms=Math.round(performance.now()-t0);ok(r)};
+ tm=setTimeout(()=>done({ok:0,r:`hết thời gian chờ (${ms/1000} s)`}),ms);const im=new Image();im.crossOrigin='anonymous';
+ im.onload=()=>{let b=false;try{b=blankTile(im)}catch(e){}done({ok:1,cors:1,blank:b,r:b?'tải được nhưng là ô TRỐNG (không có ảnh ở mức này)':'OK'})};
+ im.onerror=()=>{const i2=new Image();i2.onload=()=>done({ok:1,cors:0,r:'tải được nhưng không có CORS (không đọc được điểm ảnh)'});i2.onerror=()=>done({ok:0,r:'LỖI — không tải được (mạng chặn hoặc máy chủ từ chối)'});i2.src=url+(url.includes('?')?'&':'?')+'nc'};im.src=url})}
+const getPos=hi=>new Promise(ok=>{if(!navigator.geolocation)return ok({e:'trình duyệt không hỗ trợ'});navigator.geolocation.getCurrentPosition(p=>ok({p}),e=>ok({e:`mã ${e.code}: ${e.message}`}),{enableHighAccuracy:hi,timeout:hi?10000:15000,maximumAge:0})});
+async function diag(){const PR=[],out=[];const L=s=>{out.push(s);$('dgt').textContent=out.join('\n')},bad=[];$('dg').style.display='flex';$('dgt').textContent='Đang kiểm tra …';
+ L(`PHIÊN BẢN: M8 Mobile ${BUILD}`);
+ L(`Địa chỉ: ${location.protocol}//${location.host||'(tệp)'} · an toàn/HTTPS: ${window.isSecureContext?'có':'KHÔNG'} · mạng: ${navigator.onLine?'có':'KHÔNG'}`);
+ if(!window.isSecureContext)bad.push('Trang không mở bằng HTTPS nên trình duyệt chặn định vị (vị trí hiện tại).');
+ L('Trình duyệt: '+navigator.userAgent.replace(/\s+/g,' ').slice(0,150)+(inBox()?'  ⚠ KHÔNG phải trình duyệt thường (khung xem trước/WebView)':''));
+ try{const rs=navigator.serviceWorker?await navigator.serviceWorker.getRegistrations():[],ks=window.caches?await caches.keys():[];L(`Service worker: ${rs.length} · bộ nhớ đệm: ${ks.length} (${ks.join(', ')||'-'}) · đang điều khiển trang: ${navigator.serviceWorker&&navigator.serviceWorker.controller?'có':'không'}`)}catch(e){L('Service worker: không đọc được')}
+ let la=21.4,lo=105.5,inVN=false;L('');L('— BẢN ĐỒ —');
+ try{if(!M)L('Chưa mở bản đồ');else{const q=mapBB(),w=(q[2]-q[0])/1000,h=(q[3]-q[1])/1000,c=toLL(V.cx,V.cy);inVN=isFinite(c[0])&&isFinite(c[1])&&c[0]>=8&&c[0]<=24.5&&c[1]>=102&&c[1]<=110.5;if(inVN){la=c[0];lo=c[1]}
+  L(`File: ${fname} · ${M.prims.length} đối tượng · gốc tọa độ (org) = ${M.org[0]}, ${M.org[1]}`);
+  const un=(w>300000||h>300000||(w<30&&h<30));L(`Kích thước (nếu 1000 đơn vị = 1 m): ${w.toFixed(0)} × ${h.toFixed(0)} m`+(un?'  ⚠ bất thường — đơn vị bản vẽ có thể không phải mm':''));if(un)bad.push('Kích thước bản đồ bất thường — đơn vị bản vẽ có thể không phải mm nên ảnh vệ tinh bị sai tỉ lệ.');
+  L(`KTT ${cmv()}° · k0 ${k0v()} · dịch gốc ${dtv()?'QĐ 05/2007':'không'}`);L(`Tâm bản đồ → vĩ độ ${isFinite(c[0])?c[0].toFixed(6):'?'}, kinh độ ${isFinite(c[1])?c[1].toFixed(6):'?'} ${inVN?'(trong Việt Nam)':'⚠ NGOÀI VIỆT NAM'}`);
+  if(!inVN)bad.push('Tọa độ bản đồ đổi ra ngoài Việt Nam: hãy chỉnh Kinh tuyến trục (KTT) và k0 trong ⚙ cho đúng tỉnh. Đây là nguyên nhân khiến ảnh vệ tinh và vị trí không đúng chỗ.');
+  const t=T(V.cx,V.cy),sh=Math.hypot(t[0]-V.cx,t[1]-V.cy)/1000;L(`Hiệu chỉnh: ${CAL.pts.length} điểm chuẩn · dịch ${sh.toFixed(1)} m · tự khớp ΔE=${(AU[0]/1000).toFixed(1)} m ΔN=${(AU[1]/1000).toFixed(1)} m`+(sh>300?'  ⚠ lớn — thử “Xóa hiệu chỉnh”':''));if(sh>300)bad.push('Hiệu chỉnh đang dịch bản vẽ rất xa (>300 m): thử bấm “Xóa hiệu chỉnh”.')}}catch(e){L('Lỗi đọc bản đồ: '+e.message)}
+ L('');L('— ẢNH VỆ TINH —');const fns=satFns(),nm=satNames();
+ L(`Bật: ${satOn?'có':'KHÔNG'}${ggOn?' (đang dùng nền Google)':''} · nguồn: ${nm[Math.min(SP,nm.length-1)]} · mức ${TZ} · ô trong khung ${NL}/${NT} · lỗi ${TERR} · đã tải ${TOK} · đọc được điểm ảnh: ${TAINT?'không (CORS)':'có'} · tối đa mức ${zmx()}`);
+ if(!satOn)bad.push('Nút “Vệ tinh Esri” đang TẮT (⚙ → Vệ tinh Esri).');if(ggOn)bad.push('Đang dùng “Nền Google” (cần khóa API) — bấm “↻ Tải lại ảnh” để quay về Esri.');
+ const n15=2**15,tx=Math.floor((lo+180)/360*n15),ty=Math.floor((1-Math.log(Math.tan(la*RAD)+1/Math.cos(la*RAD))/Math.PI)/2*n15);let anyOk=false;
+ for(let i=0;i<fns.length;i++){const r=await probe(fns[i](15,tx,ty));PR.push(r);L(`Thử tải ${nm[i]}: ${r.r} (${r.ms} ms)`);if(r.ok)anyOk=true}
+ const rc=await probe('https://tile.openstreetmap.org/5/25/14.png');PR.push(rc);L(`Đối chứng internet (OSM): ${rc.r} (${rc.ms} ms)`);
+ if(!anyOk)bad.push(rc.ok?'Internet có nhưng máy chủ ảnh Esri bị chặn trên mạng/thiết bị này — thử mạng khác (4G/Wi-Fi khác) hoặc đặt nguồn ảnh khác (⚙ → Nguồn ảnh khác).':'Thiết bị không ra được internet (hoặc mạng chặn mọi tải ảnh).');
+ if(anyOk){let best=0;const f0=fns[Math.min(SP,fns.length-1)];for(const z of[16,17,18,19]){const n=2**z,x=Math.floor((lo+180)/360*n),y=Math.floor((1-Math.log(Math.tan(la*RAD)+1/Math.cos(la*RAD))/Math.PI)/2*n),r=await probe(f0(z,x,y));L(`Phủ ảnh tại tâm bản đồ, mức ${z}: ${r.ok&&!r.blank?'có ảnh':r.ok?'ô TRỐNG':'lỗi'}`);if(r.ok&&!r.blank)best=z}
+  if(best&&best<19){const o=[...$('mz').options].find(x=>+x.value===best);if(o){$('mz').value=o.value;saveSet();TL2.clear();draw();L(`→ Đã TỰ ĐẶT “Ảnh: tối đa mức ${best}” vì Esri chưa có ảnh chi tiết hơn tại đây.`)}else bad.push(`Esri chỉ có ảnh đến mức ${best} tại đây: hãy chọn “Tối đa mức ${best}” hoặc thấp hơn trong ⚙.`)}
+  if(!best)bad.push('Esri không có ảnh vệ tinh tại vị trí này ở các mức 16–19 (hoặc không đọc được điểm ảnh).')}
+ L('');L('— VỊ TRÍ HIỆN TẠI —');let perm='không đọc được';try{perm=(await navigator.permissions.query({name:'geolocation'})).state}catch(e){}
+ L(`Quyền vị trí: ${perm}`);if(perm==='denied')bad.push('Quyền vị trí đang bị TỪ CHỐI: bật lại “Vị trí” cho trang này trong cài đặt trình duyệt.');
+ let g=await getPos(true);const ge=g.e||'';L('Thử GPS (chính xác cao): '+(g.p?`${g.p.coords.latitude.toFixed(6)}, ${g.p.coords.longitude.toFixed(6)} ±${Math.round(g.p.coords.accuracy)} m`:'LỖI '+g.e));
+ if(!g.p){g=await getPos(false);L('Thử định vị bằng mạng/Wi-Fi: '+(g.p?`${g.p.coords.latitude.toFixed(6)}, ${g.p.coords.longitude.toFixed(6)} ±${Math.round(g.p.coords.accuracy)} m`:'LỖI '+g.e))}
+ if(!g.p)bad.push('Không lấy được vị trí: kiểm tra đã bật Vị trí/GPS của điện thoại và cho phép trang này dùng vị trí.');
+ else if(M){const u=fromLL(g.p.coords.latitude,g.p.coords.longitude);if(!isFinite(u[0]))bad.push('Không đổi được vị trí sang tọa độ bản vẽ (KTT/k0 sai).');else{const dm=bbDist(u[0],u[1])/1000;L(`Vị trí so với vùng bản đồ: ${dm<1?'nằm trong/sát vùng bản đồ':'cách '+fmtD(dm)}`);if(dm>300)bad.push(`Vị trí của bạn cách vùng bản đồ ${fmtD(dm)}: nếu bạn đang ở trong vùng thì KTT/k0 đang sai.`)}}
+ const sand=(PR.length&&PR.every(r=>!r.ok&&r.ms<40))||/Origin does not have permission|permissions? policy/i.test(ge)||(inBox()&&PR.length&&PR.every(r=>!r.ok));
+ if(sand){bad.length=0;bad.push('NGUYÊN NHÂN CHÍNH: trang đang chạy trong khung xem trước (hoặc ứng dụng bọc) — nơi này CHẶN mọi yêu cầu mạng và vị trí, nên không bao giờ có ảnh vệ tinh hay vị trí hiện tại. Hãy mở file bằng Safari/Chrome từ một địa chỉ web https (đưa index.html lên nơi lưu trữ web), rồi “Thêm vào MH chính”.')}
+ L('');L(bad.length?'KẾT LUẬN — CẦN XỬ LÝ:':'KẾT LUẬN: không phát hiện lỗi.');bad.forEach((s,i)=>L(`${i+1}. ${s}`));if(!bad.length)L('Nếu vẫn không thấy ảnh/vị trí, hãy chụp màn hình báo cáo này gửi lại.')}
+$('dgb').onclick=diag;$('dgx').onclick=()=>{$('dg').style.display='none'};
+$('dgc').onclick=()=>{const t=$('dgt').textContent;try{navigator.clipboard.writeText(t);st('Đã sao chép báo cáo chẩn đoán')}catch(e){st('Không sao chép được — hãy chụp màn hình')}};
+$('dgr').onclick=async()=>{try{const rs=navigator.serviceWorker?await navigator.serviceWorker.getRegistrations():[];for(const r of rs)await r.unregister();if(window.caches)for(const k of await caches.keys())await caches.delete(k)}catch(e){}location.reload()};
+$('cu').onclick=()=>{const v=prompt('Dán địa chỉ ô ảnh vệ tinh (có {z} {x} {y}), ví dụ: https://máy-chủ/{z}/{y}/{x}.jpg\nĐể trống = dùng lại Esri mặc định:',CUST);if(v===null)return;const s=v.trim();
+ if(s&&!(/^https:\/\//.test(s)&&/\{z\}/.test(s)&&/\{x\}/.test(s)&&/\{y\}/.test(s))){st('Địa chỉ không hợp lệ: cần bắt đầu bằng https:// và có đủ {z} {x} {y}');return}
+ CUST=s;try{s?localStorage.setItem('dgntile',s):localStorage.removeItem('dgntile')}catch(e){}SP=0;TERR=0;TOK=0;TL2.clear();st(s?'Đã đặt nguồn ảnh tùy chọn':'Đã dùng lại Esri mặc định');draw()};
+/*DIAG-END*/
+// nhớ cài đặt hệ tọa độ / ảnh giữa các lần mở
+const SETK=['cm','k0','dt','mz'];
+function saveSet(){try{localStorage.setItem('dgnset',JSON.stringify({cm:$('cm').value,k0:$('k0').value,dt:$('dt').value,mz:$('mz').value,sat:satOn}))}catch(e){}}
+(function(){try{const s=JSON.parse(localStorage.getItem('dgnset')||'{}');for(const k of SETK)if(s[k]!=null&&s[k]!=='')$(k).value=s[k];if(s.sat===false){satOn=false;$('sat').classList.remove('on')}}catch(e){}
+ for(const k of SETK){$(k).addEventListener('change',saveSet);$(k).addEventListener('input',saveSet)}$('sat').addEventListener('click',saveSet)})();
+$('rf').onclick=()=>{SP=0;TERR=0;TOK=0;TL2.clear();satOn=true;ggOn=false;$('gmap').style.display='none';$('sat').classList.add('on');$('gg').classList.remove('on');saveSet();st('Đang tải lại ảnh vệ tinh …');draw()};
+addEventListener('resize',size);size();
+(async()=>{try{const n=localStorage.getItem('last');if(n){const b=await dbGet(n);if(b)await loadBuf(n,new Uint8Array(b),false)}}catch(e){}})();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>
